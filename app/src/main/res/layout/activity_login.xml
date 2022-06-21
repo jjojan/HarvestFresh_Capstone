@@ -27,7 +27,7 @@
         android:layout_marginBottom="299dp"
         android:ems="10"
         android:hint="Password"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textWebPassword"
         android:minHeight="48dp" />
 
     <EditText
@@ -70,7 +70,10 @@
         android:layout_height="204dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="125dp"
         android:layout_marginBottom="492dp"
+        app:srcCompat="@drawable/hficon2"
         tools:srcCompat="@drawable/hficon2" />
 </RelativeLayout>
