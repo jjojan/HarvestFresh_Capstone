@@ -1,5 +1,6 @@
 package com.example.harvestfresh;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -9,6 +10,10 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,5 +43,20 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String username, String password) {
             Log.i(TAG, "Trying to Log in");
+            ParseUser.logInInBackground(username, password, new LogInCallback() {
+                @Override
+                public void done(ParseUser user, ParseException e) {
+                if (e != null){
+                    Log.e(TAG, "Error with logging in!");
+                    return;
+                }
+                goMainActivity();
+                }
+            });
+    }
+
+    private void goMainActivity() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 }
