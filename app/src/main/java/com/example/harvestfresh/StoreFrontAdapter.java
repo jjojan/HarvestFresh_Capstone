@@ -16,25 +16,25 @@ import com.parse.ParseFile;
 
 import java.util.List;
 
-public class StoreFrontAdapater extends RecyclerView.Adapter<StoreFrontAdapater.ViewHolder> {
+public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.ViewHolder> {
 
     private Context context;
     private List<StoreFront> stores;
 
-    public StoreFrontAdapater(Context context, List<StoreFront> stores) {
+    public StoreFrontAdapter(Context context, List<StoreFront> stores) {
         this.context = context;
         this.stores = stores;
     }
 
     @NonNull
     @Override
-    public StoreFrontAdapater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StoreFrontAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_store, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StoreFrontAdapater.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StoreFrontAdapter.ViewHolder holder, int position) {
         StoreFront store = stores.get(position);
         holder.bind(store);
     }
