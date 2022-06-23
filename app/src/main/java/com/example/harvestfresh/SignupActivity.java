@@ -25,7 +25,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.signup_activity);
+        setContentView(R.layout.activity_signup);
 
         btnFinalSignup = findViewById(R.id.btnFinalSignup);
         etSignupUsername = findViewById(R.id.etSignupUsername);

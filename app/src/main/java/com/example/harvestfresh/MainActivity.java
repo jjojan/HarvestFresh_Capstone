@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
         ParseUser.logOutInBackground();
         ParseUser currentUser = ParseUser.getCurrentUser();
         Toast.makeText(this, "You been logged out", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
         finish();
     }
 }
