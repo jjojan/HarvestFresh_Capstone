@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/ivProfile"
+            android:id="@+id/ivStore"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
