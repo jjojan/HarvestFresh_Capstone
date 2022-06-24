@@ -20,7 +20,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etSignupUsername;
     private EditText etSignupPassword;
     private EditText etConfirmPassword;
-    private static final String TAG = "SIGNUPACTIVITY";
+    private static final String TAG = "SignupActivitygit p";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +40,9 @@ public class SignupActivity extends AppCompatActivity {
                 String newPassword = etSignupPassword.getText().toString();
                 String confirmPassword = etConfirmPassword.getText().toString();
 
-                if(newUsername.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()){
+                if(newUsername.isEmpty()
+                        || newPassword.isEmpty()
+                        || confirmPassword.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "One or more of the fields are blank", Toast.LENGTH_SHORT).show();
                 }
                 else if (newPassword == confirmPassword){

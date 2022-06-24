@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 for (StoreFront store : stores) {
-                    Log.i(TAG, "Store:"+ store.getName());
+                    Log.d(TAG, "Store:"+ store.getName());
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
