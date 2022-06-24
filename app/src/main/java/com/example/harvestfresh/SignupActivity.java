@@ -20,7 +20,11 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etSignupUsername;
     private EditText etSignupPassword;
     private EditText etConfirmPassword;
-    private static final String TAG = "SignupActivitygit p";
+
+    private static final String TAG = "SignupActivity";
+    private static final String SIGN_ERROR = "Error with signup";
+    public static final String PASSWORD_MISMATCH = String.valueOf(R.string.password_mismatch);
+    public static final String BLANK_FIELDS = String.valueOf(R.string.blank_field);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,13 +47,13 @@ public class SignupActivity extends AppCompatActivity {
                 if(newUsername.isEmpty()
                         || newPassword.isEmpty()
                         || confirmPassword.isEmpty()) {
-                    Toast.makeText(SignupActivity.this, "One or more of the fields are blank", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, BLANK_FIELDS, Toast.LENGTH_SHORT).show();
                 }
                 else if (newPassword == confirmPassword){
                     signupUser(newUsername, newPassword);
                 }
                 else{
-                    Toast.makeText(SignupActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this,PASSWORD_MISMATCH, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -66,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
                 if (e == null) {
                     goMainActivity();
                 } else {
-                    Log.e(TAG, "Error with signup");
+                    Log.e(TAG, SIGN_ERROR);
                 }
             }
         });
