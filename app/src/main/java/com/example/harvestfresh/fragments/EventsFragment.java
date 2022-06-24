@@ -2,15 +2,28 @@ package com.example.harvestfresh.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.app.Service;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.location.LocationRequest;
+import android.os.Build;
 import android.os.Bundle;
+import android.location.LocationListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Looper;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,8 +56,16 @@ public class EventsFragment extends Fragment implements OnMapReadyCallback {
     private long FASTEST_INTERVAL = 5000;
 
     private SupportMapFragment mapFragment;
-    private GoogleMap newMap;
+    private GoogleMap map;
     private LocationRequest mLocationRequest;
+
+    private static final int PERMISSION_CODE = 101;
+    String[] permissions_all={Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION};
+    LocationManager locationManager;
+    boolean isGpsLocation;
+    Location loc;
+    boolean isNetworklocation;
+    ProgressDialog progressDialog;
 
     Location mCurrentLocation;
 
@@ -66,6 +87,8 @@ public class EventsFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_events, container, false);
+        progressDialog=new ProgressDialog(getContext());
+        progressDialog.setMessage("Fetching location...");
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -79,154 +102,169 @@ public class EventsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        newMap = googleMap;
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(51.5072, 0.1276))
-                .title("Marker"));
-        LatLng latLng = new LatLng(51.5072, 0.1276);
-        newMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        newMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15f));
+        map = googleMap;
+        getLocation();
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(51.5072, 0.1276))
+//                .title("London"));
+//        LatLng latLng = new LatLng(51.5072, 0.1276);
+//        map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15f));
     }
 
-//    private void loadMap(GoogleMap map) {
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        EventsFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//    }
-//
-//    @SuppressWarnings({"MissingPermission"})
-//    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-//    void getMyLocation() {
-//        map.setMyLocationEnabled(true);
-//        map.getUiSettings().setMyLocationButtonEnabled(true);
-//
-//        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
-//        locationClient.getLastLocation()
-//                .addOnSuccessListener(new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        if (location != null) {
-//                            onLocationChanged(location);
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d("MapDemoActivity", "Error trying to get last GPS location");
-//                        e.printStackTrace();
-//                    }
-//                });
-//    }
-//
-//    /*
-//     * Called when the Activity becomes visible.
-//     */
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//    }
-//
-//    /*
-//     * Called when the Activity is no longer visible.
-//     */
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//    }
-//
-//    private boolean isGooglePlayServicesAvailable() {
-//        // Check that Google Play services is available
-//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-//        // If Google Play services is available
-//        if (ConnectionResult.SUCCESS == resultCode) {
-//            // In debug mode, log the status
-//            Log.d("Location Updates", "Google Play services is available.");
-//            return true;
-//        } else {
-//            // Get the error dialog from Google Play services
-//            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-//
-//            // If Google Play services can provide an error dialog
-//            if (errorDialog != null) {
-//                // Create a new DialogFragment for the error dialog
-//                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-//                errorFragment.setDialog(errorDialog);
-//                errorFragment.show(getFragmentManager(), "Location Updates");
-//            }
-//
-//            return false;
-//        }
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        displayLocation();
-//
-//        .startLocationUpdatesWithPermissionCheck(this);
-//    }
-//
-//    private void displayLocation() {
-//        if (mCurrentLocation != null) {
-//            //Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-//            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-//            map.animateCamera(cameraUpdate);
-//        } else {
-//            //Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-//    protected void startLocationUpdates() {
-//        mLocationRequest = new LocationRequest();
-//        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//        mLocationRequest.setInterval(UPDATE_INTERVAL);
-//        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-//
-//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-//        builder.addLocationRequest(mLocationRequest);
-//        LocationSettingsRequest locationSettingsRequest = builder.build();
-//
-//        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-//        settingsClient.checkLocationSettings(locationSettingsRequest);
-//        //noinspection MissingPermission
-//        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-//                    @Override
-//                    public void onLocationResult(LocationResult locationResult) {
-//                        onLocationChanged(locationResult.getLastLocation());
-//                    }
-//                },
-//                Looper.myLooper());
-//    }
-//
-//    public void onLocationChanged(Location location) {
-//        // GPS may be turned off
-//        if (location == null) {
-//            return;
-//        }
-//
-//        mCurrentLocation = location;
-//        String msg = "Updated Location: " +
-//                Double.toString(location.getLatitude()) + "," +
-//                Double.toString(location.getLongitude());
-//        //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-//        displayLocation();
-//    }
-//
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
-//        super.onSaveInstanceState(savedInstanceState);
-//    }
-//
-//    @Override
-//    public void onMapLongClick(@NonNull LatLng latLng) {
-//
-//    }
+    private void getLocation() {
+        progressDialog.show();
+        if(Build.VERSION.SDK_INT>=23){
+            if(checkPermission()){
+                getDeviceLocation();
+            }
+            else{
+                requestPermission();
+            }
+        }
+        else{
+            getDeviceLocation();
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(),permissions_all,PERMISSION_CODE);
+    }
+
+    private boolean checkPermission() {
+        for(int i=0;i<permissions_all.length;i++){
+            int result= ContextCompat.checkSelfPermission(getContext(),permissions_all[i]);
+            if(result== PackageManager.PERMISSION_GRANTED){
+                continue;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void getDeviceLocation() {
+        locationManager=(LocationManager) getActivity().getSystemService(Service.LOCATION_SERVICE);
+        isGpsLocation=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworklocation=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if(!isGpsLocation && !isNetworklocation){
+            showSettingForLocation();
+            getLastlocation();
+        }
+        else{
+            getFinalLocation();
+        }
+    }
+
+    private void getLastlocation() {
+        if(locationManager!=null) {
+            try {
+                Criteria criteria = new Criteria();
+                String provider = locationManager.getBestProvider(criteria,false);
+                Location location=locationManager.getLastKnownLocation(provider);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case PERMISSION_CODE:
+                if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                    getFinalLocation();
+                }
+                else{
+                    Toast.makeText(getContext(), "Permission Failed", Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
+
+    private void getFinalLocation() {
+        //one thing i missed in permission let's complete it
+        try{
+            if(isGpsLocation){
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000*60*1,10, (LocationListener) getContext());
+                if(locationManager!=null){
+                    loc=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if(loc!=null){
+                        updateUi(loc);
+                    }
+                }
+            }
+            else if(isNetworklocation){
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000*60*1,10, (LocationListener) getContext());
+                if(locationManager!=null){
+                    loc=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if(loc!=null){
+                        updateUi(loc);
+                    }
+                }
+            }
+            else{
+                Toast.makeText(getContext(), "Can't Get Location", Toast.LENGTH_SHORT).show();
+            }
+
+        }catch (SecurityException e){
+            Toast.makeText(getContext(), "Can't Get Location", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void updateUi(Location loc) {
+        if(loc.getLatitude()==0 && loc.getLongitude()==0){
+            getDeviceLocation();
+        }
+        else{
+            progressDialog.dismiss();
+            LatLng latLng=new LatLng(loc.getLatitude(),loc.getLongitude());
+            map.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15f));
+
+        }
+
+    }
+
+    private void showSettingForLocation() {
+        AlertDialog.Builder al=new AlertDialog.Builder(getContext());
+        al.setTitle("Location Not Enabled!");
+        al.setMessage("Enable Location ?");
+        al.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent=new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+        al.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        al.show();
+    }
+
+
+    public void onLocationChanged(Location location) {
+        updateUi(location);
+    }
+
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    public void onProviderDisabled(String provider) {
+
+    }
+
 }
