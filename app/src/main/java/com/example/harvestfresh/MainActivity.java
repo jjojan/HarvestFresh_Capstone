@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.harvestfresh.fragments.EventsFragment;
 import com.example.harvestfresh.fragments.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new HomeFragment();
                         break;
                     case R.id.mEvents:
-                        fragment = new HomeFragment();
+                        fragment = new EventsFragment();
                         break;
                     case R.id.mCart:
                     default:
