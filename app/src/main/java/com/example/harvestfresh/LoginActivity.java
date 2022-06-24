@@ -30,9 +30,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        if(ParseUser.getCurrentUser() != null){
-//            goMainActivity();
-//        }
+        if(ParseUser.getCurrentUser() != null){
+            goMainActivity();
+        }
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e != null){
-                    Log.e(TAG, "Error with logging in!");
+                    Log.e(TAG, "Error - Signup failed with ParseException" + e.toString());
                     return;
                     }
             goMainActivity();
