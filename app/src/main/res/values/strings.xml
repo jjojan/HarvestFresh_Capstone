@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">HarvestFresh</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="blank_field">one or more of the fields are blank</string>
 </resources>
