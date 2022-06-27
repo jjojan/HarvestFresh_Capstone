@@ -62,7 +62,7 @@ import java.util.Arrays;
 public class EventsFragment extends Fragment {
 
     private static final int REQUEST_CODE = 101;
-    private static final String TAG = "SignupActivity";
+    private static final String TAG = "EventsFragment";
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
@@ -102,19 +102,30 @@ public class EventsFragment extends Fragment {
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.fragmentAutoComplete);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                String placeName = place.getName();
+                Log.d(TAG, "Search" + place.getLatLng());
+                LatLng searchLatLng = place.getLatLng();
+                goPlace(searchLatLng, placeName);
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                Log.e(TAG, "An error occurred: " + status);
             }
         });
+    }
+
+    private void goPlace(LatLng searchLatLng, String placeName) {
+        MarkerOptions markerOptions = new MarkerOptions().position(searchLatLng).title(placeName);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(searchLatLng));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchLatLng, 12));
+        mMap.addMarker(markerOptions);
     }
 
     private void placeMarkers() {
@@ -146,7 +157,7 @@ public class EventsFragment extends Fragment {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Current Location");
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
         mMap.addMarker(markerOptions);
 
         placeMarkers();
