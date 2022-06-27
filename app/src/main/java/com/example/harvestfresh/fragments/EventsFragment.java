@@ -37,6 +37,7 @@ import com.example.harvestfresh.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
@@ -50,6 +51,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
+import java.util.Arrays;
 
 
 public class EventsFragment extends Fragment {
@@ -68,12 +75,8 @@ public class EventsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            mMap.setMyLocationEnabled(true);
             markerMap = googleMap;
-//            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Here I am!");
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5));
-//            googleMap.addMarker(markerOptions);
         }
     };
 
@@ -94,6 +97,24 @@ public class EventsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
+        Places.initialize(getContext(), getString(R.string.google_maps_api_key));
+
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.fragmentAutoComplete);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
 
     private void placeMarkers() {
