@@ -20,7 +20,8 @@ public class SignupActivity extends AppCompatActivity {
     private EditText etSignupUsername;
     private EditText etSignupPassword;
     private EditText etConfirmPassword;
-    private static final String TAG = "SIGNUPACTIVITY";
+
+    private static final String TAG = "SignupActivity";
     private static final String SIGN_ERROR = "Error with signup";
     public static final String PASSWORD_MISMATCH = String.valueOf(R.string.password_mismatch);
     public static final String BLANK_FIELDS = String.valueOf(R.string.blank_field);
@@ -28,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.signup_activity);
+        setContentView(R.layout.activity_signup);
 
         btnFinalSignup = findViewById(R.id.btnFinalSignup);
         etSignupUsername = findViewById(R.id.etSignupUsername);
@@ -43,7 +44,9 @@ public class SignupActivity extends AppCompatActivity {
                 String newPassword = etSignupPassword.getText().toString();
                 String confirmPassword = etConfirmPassword.getText().toString();
 
-                if(newUsername.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()){
+                if(newUsername.isEmpty()
+                        || newPassword.isEmpty()
+                        || confirmPassword.isEmpty()) {
                     Toast.makeText(SignupActivity.this, BLANK_FIELDS, Toast.LENGTH_SHORT).show();
                 }
                 else if (newPassword == confirmPassword){
