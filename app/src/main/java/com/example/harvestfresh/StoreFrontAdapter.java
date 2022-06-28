@@ -58,6 +58,8 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
 
         private TextView tvStoreName;
         private ImageView ivImage;
+        private TextView tvLong;
+        private TextView tvLat;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

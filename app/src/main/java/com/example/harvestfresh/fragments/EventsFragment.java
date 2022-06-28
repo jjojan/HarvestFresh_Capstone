@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.example.harvestfresh.R;
+import com.example.harvestfresh.StoreFront;
+import com.example.harvestfresh.StoreFrontAdapter;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -33,8 +35,13 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class EventsFragment extends Fragment {
@@ -44,6 +51,8 @@ public class EventsFragment extends Fragment {
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
+    private StoreFrontAdapter fragmentAdapter;
+    private List<StoreFront> allStores;
 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -68,6 +77,9 @@ public class EventsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        allStores = new ArrayList<>();
+        fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLastLocation();
@@ -108,6 +120,29 @@ public class EventsFragment extends Fragment {
     }
 
     private void placeMarkers() {
+        ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
+        query.include(StoreFront.KEY_NAME);
+        query.include(StoreFront.KEY_LATITUDE);
+        query.include(StoreFront.KEY_LONGITUDE);
+        query.setLimit(20);
+
+        query.findInBackground(new FindCallback<StoreFront>() {
+            @Override
+            public void done(List<StoreFront> stores, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting stores", e);
+                    return;
+                }
+                for (StoreFront store : stores) {
+                    Log.i(TAG, "Store:"+ store.getName());
+                    LatLng newLang = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
+                    MarkerOptions newMarker = new MarkerOptions().position(newLang).title(store.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
+                    markerMap.addMarker(newMarker);
+                }
+                allStores.addAll(stores);
+                fragmentAdapter.notifyDataSetChanged();
+            }
+        });
         LatLng newLang = new LatLng(37.474300, -122.139038);
         MarkerOptions newMarker = new MarkerOptions().position(newLang).title("Marker 1").icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
         markerMap.addMarker(newMarker);

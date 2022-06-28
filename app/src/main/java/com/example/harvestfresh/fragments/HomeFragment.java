@@ -18,6 +18,7 @@ import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
@@ -71,6 +72,8 @@ public class HomeFragment extends Fragment {
     private void queryStores() {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
+        query.include(StoreFront.KEY_LATITUDE);
+        query.include(StoreFront.KEY_LONGITUDE);
         query.setLimit(20);
 
         query.findInBackground(new FindCallback<StoreFront>() {
@@ -82,10 +85,13 @@ public class HomeFragment extends Fragment {
                 }
                 for (StoreFront store : stores) {
                     Log.i(TAG, "Store:"+ store.getName());
+
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
         });
+
     }
+
 }
