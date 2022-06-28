@@ -19,11 +19,14 @@ import com.parse.ParseUser;
 public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
+
+    final FragmentManager fragmentManager = getSupportFragmentManager();
+
     private EditText etUsername;
     private EditText etPassword;
     private Button btnLogin;
     private Button btnSignup;
-    final FragmentManager fragmentManager = getSupportFragmentManager();
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
