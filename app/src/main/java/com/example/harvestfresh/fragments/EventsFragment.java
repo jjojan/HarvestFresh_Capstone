@@ -37,6 +37,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public class EventsFragment extends Fragment {
 
     private static final int REQUEST_CODE = 101;
     private static final String TAG = "EventsFragment";
+    private static final String CURRENT_LOCATION = "Current Location";
+    private static final String ERROR_MESSAGE = "An error occured";
+    public static final String MILES_AWAY = String.valueOf(R.string.miles_away);
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
@@ -98,16 +102,14 @@ public class EventsFragment extends Fragment {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
                 String placeName = place.getName();
-                Log.d(TAG, "Search" + place.getLatLng());
                 LatLng searchLatLng = place.getLatLng();
                 goPlace(searchLatLng, placeName);
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                Log.e(TAG, "An error occurred: " + status);
+                Log.e(TAG, ERROR_MESSAGE + status);
             }
         });
     }
@@ -119,7 +121,7 @@ public class EventsFragment extends Fragment {
         mMap.addMarker(markerOptions);
     }
 
-    private void placeMarkers() {
+    private void placeMarkers(ParseGeoPoint userLocation) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
         query.setLimit(20);
@@ -128,22 +130,20 @@ public class EventsFragment extends Fragment {
             @Override
             public void done(List<StoreFront> stores, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting stores", e);
+                    Log.e(TAG, ERROR_MESSAGE, e);
                     return;
                 }
                 for (StoreFront store : stores) {
-                    Log.i(TAG, "Store:"+ store.getName());
-                    LatLng newLang = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
-                    MarkerOptions newMarker = new MarkerOptions().position(newLang).title(store.getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
+                    LatLng newLocation = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
+                    ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude, newLocation.longitude);
+                    double milesDistance = Math.round(userLocation.distanceInMilesTo(storeMarker));
+                    MarkerOptions newMarker = new MarkerOptions().position(newLocation).title(store.getName()).snippet(Double.toString(milesDistance) + " Miles Away").icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
                     markerMap.addMarker(newMarker);
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
         });
-        LatLng newLang = new LatLng(37.474300, -122.139038);
-        MarkerOptions newMarker = new MarkerOptions().position(newLang).title("Marker 1").icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
-        markerMap.addMarker(newMarker);
     }
 
     private void fetchLastLocation() {
@@ -154,7 +154,6 @@ public class EventsFragment extends Fragment {
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
-            Log.d(TAG,"Location " + location );
             if (location != null) {
                 currentLocation = location;
                 updateCurrentLocation();
@@ -167,12 +166,13 @@ public class EventsFragment extends Fragment {
 
     private void updateCurrentLocation() {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Current Location");
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
         mMap.addMarker(markerOptions);
+        ParseGeoPoint userLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
 
-        placeMarkers();
+        placeMarkers(userLocation);
     }
 }
 
