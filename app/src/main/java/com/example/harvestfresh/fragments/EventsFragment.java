@@ -51,6 +51,7 @@ public class EventsFragment extends Fragment {
     private static final String TAG = "EventsFragment";
     private static final String CURRENT_LOCATION = "Current Location";
     private static final String ERROR_MESSAGE = "An error occured";
+    private static final String MILES_AWAY = " Miles Away";
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
