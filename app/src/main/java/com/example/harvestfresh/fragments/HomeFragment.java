@@ -72,8 +72,6 @@ public class HomeFragment extends Fragment {
     private void queryStores() {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.include(StoreFront.KEY_LATITUDE);
-        query.include(StoreFront.KEY_LONGITUDE);
         query.setLimit(20);
 
         query.findInBackground(new FindCallback<StoreFront>() {

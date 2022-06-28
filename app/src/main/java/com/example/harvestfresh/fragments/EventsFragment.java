@@ -122,8 +122,6 @@ public class EventsFragment extends Fragment {
     private void placeMarkers() {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.include(StoreFront.KEY_LATITUDE);
-        query.include(StoreFront.KEY_LONGITUDE);
         query.setLimit(20);
 
         query.findInBackground(new FindCallback<StoreFront>() {
@@ -169,7 +167,7 @@ public class EventsFragment extends Fragment {
 
     private void updateCurrentLocation() {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Current Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
+        MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Current Location");
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
         mMap.addMarker(markerOptions);
