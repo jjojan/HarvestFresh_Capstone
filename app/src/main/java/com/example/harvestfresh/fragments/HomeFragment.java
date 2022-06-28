@@ -18,7 +18,6 @@ import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rvStores = view.findViewById(R.id.rvStores);
+        rvStores = view.findViewById(R.id.rvSearch);
         rvStores.setHasFixedSize(true);
 
         final GridLayoutManager layout = new GridLayoutManager(getContext(), 2);

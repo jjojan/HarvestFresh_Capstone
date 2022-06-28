@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.harvestfresh.fragments.EventsFragment;
 import com.example.harvestfresh.fragments.HomeFragment;
+import com.example.harvestfresh.fragments.SearchFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.parse.ParseUser;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new HomeFragment();
                         break;
                     case R.id.mSearch:
-                        fragment = new HomeFragment();
+                        fragment = new SearchFragment();
                         break;
                     case R.id.mEvents:
                         fragment = new EventsFragment();
