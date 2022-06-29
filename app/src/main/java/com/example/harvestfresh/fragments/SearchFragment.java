@@ -41,7 +41,6 @@ public class SearchFragment extends Fragment {
     SearchView svSearch;
 
     public SearchFragment() {
-        // Required empty public constructor
     }
 
     public static SearchFragment newInstance(String param1, String param2) {
@@ -99,7 +98,7 @@ public class SearchFragment extends Fragment {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
         query.setLimit(20);
-        query.whereStartsWith(STORE_KEY, searchValue.toString());
+        query.whereFullText(STORE_KEY, searchValue.toString());
 
         query.findInBackground(new FindCallback<StoreFront>() {
             @Override
@@ -111,12 +110,12 @@ public class SearchFragment extends Fragment {
                 for (StoreFront store : stores) {
                     Log.i(TAG, STORE_KEY + store.getName());
                 }
+                allStores.clear();
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
         });
     }
-
 
     private void queryFullSearch(CharSequence searchValue) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
@@ -132,8 +131,9 @@ public class SearchFragment extends Fragment {
                     return;
                 }
                 for (StoreFront store : stores) {
-                    Log.i(TAG,STORE_KEY+ store.getName());
+                    Log.i(TAG,STORE_KEY + store.getName());
                 }
+                allStores.clear();
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
