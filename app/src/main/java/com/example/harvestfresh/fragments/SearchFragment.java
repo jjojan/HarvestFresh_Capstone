@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.SearchRecentSuggestions;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.harvestfresh.R;
+import com.example.harvestfresh.SearchSuggestionProvider;
 import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
 import com.parse.FindCallback;
@@ -79,6 +81,10 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 CharSequence searchValue = svSearch.getQuery().toString();
+                SearchRecentSuggestions suggestions = new SearchRecentSuggestions(getContext(),
+                        SearchSuggestionProvider.AUTHORITY,
+                        SearchSuggestionProvider.MODE);
+                suggestions.saveRecentQuery(query, null);
                 Log.d(TAG, SEARCH_REQUEST + searchValue);
                 queryFullSearch(searchValue);
                 return false;

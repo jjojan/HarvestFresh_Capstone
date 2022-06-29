@@ -6,5 +6,6 @@
     <string name="miles_away">Miles Away</string>
     <string name="password_mismatch">Passwords do not match</string>
     <string name="blank_field">one or more of the fields are blank</string>
-    <string name="store_error">Error with fetching storesk</string>
+    <string name="store_error">Error with fetching stores</string>
+    <string name="search_provider">com/example/harvestfresh/SearchSuggestionProvider</string>
 </resources>

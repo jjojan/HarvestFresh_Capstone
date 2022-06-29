@@ -17,7 +17,8 @@
         android:id="@+id/svSearch"
         android:layout_width="match_parent"
         android:queryHint="Search by Stores"
-        android:searchSuggestAuthority="@string/common_google_play_services_enable_button"
-        android:layout_height="72dp" />
+        android:searchSuggestAuthority="@string/search_provider"
+        android:layout_height="72dp"
+        android:searchSuggestSelection=" ?"/>
 
 </FrameLayout>
