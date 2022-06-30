@@ -1,5 +1,6 @@
 package com.example.harvestfresh.fragments;
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.example.harvestfresh.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,6 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
-    private static final String PRODUCT_DISPLAY = "Cart ";
 
     private RecyclerView rvCart;
     private CartAdapter fragmentAdapter;
@@ -68,17 +69,21 @@ public class CartFragment extends Fragment {
     private void queryCart() {
         ParseQuery<Cart> query = ParseQuery.getQuery(Cart.class);
         query.setLimit(20);
+        query.whereEqualTo(Cart.KEY_USER, ParseUser.getCurrentUser());
 
         query.findInBackground(new FindCallback<Cart>() {
             @Override
             public void done(List<Cart> carts, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, PRODUCT_DISPLAY, e);
                     return;
                 }
                 allCarts.addAll(carts);
                 fragmentAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void removeItem() {
+        allCarts.remove(0);
     }
 }

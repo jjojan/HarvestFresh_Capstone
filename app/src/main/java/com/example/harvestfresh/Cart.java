@@ -3,17 +3,19 @@ package com.example.harvestfresh;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 @ParseClassName("Cart")
 public class Cart extends ParseObject {
     public static final String KEY_NAME = "Product";
     public static final String KEY_COST = "Cost";
+    public static final String KEY_USER = "CartOwner";
 
-    public String getProduct(){
+    public String getProduct() {
         return getString(KEY_NAME);
     }
 
-    public void setProduct(String product){
+    public void setProduct(String product) {
         put(KEY_NAME, product);
     }
 
@@ -26,8 +28,16 @@ public class Cart extends ParseObject {
         return null;
     }
 
-    public void setPrice(ProductListing price){
+    public void setPrice(ProductListing price) {
         put(KEY_COST, price);
+    }
+
+    public ParseUser getUser() {
+        return getParseUser(KEY_USER);
+    }
+
+    public void setUser(ParseUser user) {
+        put(KEY_USER, user);
     }
 
 }
