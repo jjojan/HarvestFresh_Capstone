@@ -16,6 +16,8 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         ParseObject.registerSubclass(StoreFront.class);
+        ParseObject.registerSubclass(Cart.class);
+        ParseObject.registerSubclass(ProductListing.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId(APP_ID)

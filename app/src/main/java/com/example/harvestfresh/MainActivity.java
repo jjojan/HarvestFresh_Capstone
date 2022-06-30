@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.harvestfresh.fragments.CartFragment;
 import com.example.harvestfresh.fragments.EventsFragment;
 import com.example.harvestfresh.fragments.HomeFragment;
 import com.example.harvestfresh.fragments.SearchFragment;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.mCart:
                     default:
-                        fragment = new HomeFragment();
+                        fragment = new CartFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.fLayoutContainer, fragment).commit();
