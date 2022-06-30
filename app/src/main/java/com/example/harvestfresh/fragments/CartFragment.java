@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
@@ -29,6 +30,7 @@ public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
 
+    private Button btnCheckout;
     private RecyclerView rvCart;
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
@@ -56,6 +58,7 @@ public class CartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        btnCheckout = view.findViewById(R.id.btnCheckout);
         rvCart = view.findViewById(R.id.rvCart);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -64,6 +67,13 @@ public class CartFragment extends Fragment {
         rvCart.setAdapter(fragmentAdapter);
 
         queryCart();
+
+        btnCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartCheckout();
+            }
+        });
     }
 
     private void queryCart() {
@@ -83,7 +93,7 @@ public class CartFragment extends Fragment {
         });
     }
 
-    private void removeItem() {
-        allCarts.remove(0);
+    private void cartCheckout(){
+
     }
 }
