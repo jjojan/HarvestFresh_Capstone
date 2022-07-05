@@ -138,7 +138,7 @@ public class EventsFragment extends Fragment {
                     LatLng newLocation = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
                     ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude, newLocation.longitude);
                     double milesDistance = Math.round(userLocation.distanceInMilesTo(storeMarker));
-                    Log.d(TAG, "Miles " + MILES_AWAY);
+                    Log.d(TAG, MILES_AWAY + MILES_AWAY);
                     MarkerOptions newMarker = new MarkerOptions().position(newLocation).title(store.getName()).snippet(Double.toString(milesDistance) + MILES_AWAY).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
                     markerMap.addMarker(newMarker);
                 }
@@ -170,7 +170,7 @@ public class EventsFragment extends Fragment {
         LatLng latLng = new LatLng (currentLocation.getLatitude(), currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE ));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));
         mMap.addMarker(markerOptions);
         ParseGeoPoint userLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
 
