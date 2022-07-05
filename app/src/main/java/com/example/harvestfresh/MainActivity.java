@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.mLogout){
+        if (item.getItemId() == R.id.mLogout) {
             onLogout();
             return true;
         }

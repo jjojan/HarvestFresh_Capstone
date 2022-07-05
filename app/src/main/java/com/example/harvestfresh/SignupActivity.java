@@ -44,16 +44,14 @@ public class SignupActivity extends AppCompatActivity {
                 String newPassword = etSignupPassword.getText().toString();
                 String confirmPassword = etConfirmPassword.getText().toString();
 
-                if(newUsername.isEmpty()
+                if (newUsername.isEmpty()
                         || newPassword.isEmpty()
                         || confirmPassword.isEmpty()) {
                     Toast.makeText(SignupActivity.this, BLANK_FIELDS, Toast.LENGTH_SHORT).show();
-                }
-                else if (newPassword == confirmPassword){
+                } else if (newPassword == confirmPassword) {
                     signupUser(newUsername, newPassword);
-                }
-                else{
-                    Toast.makeText(SignupActivity.this,PASSWORD_MISMATCH, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SignupActivity.this, PASSWORD_MISMATCH, Toast.LENGTH_SHORT).show();
                 }
             }
         });

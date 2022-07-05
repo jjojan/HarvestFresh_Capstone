@@ -53,6 +53,7 @@ public class EventsFragment extends Fragment {
     private static final String ERROR_MESSAGE = "An error occured";
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
+    private static final int STORE_LIMIT = 20;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
@@ -73,9 +74,9 @@ public class EventsFragment extends Fragment {
     };
 
     @Override
-    public View onCreateView( LayoutInflater inflater,
-                              ViewGroup container,
-                              Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_events, container, false);
     }
 
@@ -125,20 +126,18 @@ public class EventsFragment extends Fragment {
     private void placeMarkers(ParseGeoPoint userLocation) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(STORE_LIMIT);
 
         query.findInBackground(new FindCallback<StoreFront>() {
             @Override
             public void done(List<StoreFront> stores, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, ERROR_MESSAGE, e);
                     return;
                 }
                 for (StoreFront store : stores) {
                     LatLng newLocation = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
                     ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude, newLocation.longitude);
                     double milesDistance = Math.round(userLocation.distanceInMilesTo(storeMarker));
-                    Log.d(TAG, MILES_AWAY + MILES_AWAY);
                     MarkerOptions newMarker = new MarkerOptions().position(newLocation).title(store.getName()).snippet(Double.toString(milesDistance) + MILES_AWAY).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
                     markerMap.addMarker(newMarker);
                 }
@@ -167,7 +166,7 @@ public class EventsFragment extends Fragment {
     }
 
     private void updateCurrentLocation() {
-        LatLng latLng = new LatLng (currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));

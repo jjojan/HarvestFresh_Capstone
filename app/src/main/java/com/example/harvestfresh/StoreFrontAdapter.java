@@ -58,8 +58,6 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
 
         private TextView tvStoreName;
         private ImageView ivImage;
-        private TextView tvLong;
-        private TextView tvLat;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,10 +65,10 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
             ivImage = itemView.findViewById(R.id.ivStore);
         }
 
-        public void bind(StoreFront store){
+        public void bind(StoreFront store) {
             tvStoreName.setText(store.getName());
             ParseFile image = store.getImage();
-            if(image != null) {
+            if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage);
             }
         }

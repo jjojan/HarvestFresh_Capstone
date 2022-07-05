@@ -25,14 +25,14 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    public static final String TAG = "HomeFragment";
+    private static final String TAG = "HomeFragment";
+    private static final String STORE_ERROR = String.valueOf(R.string.store_error);
 
     private RecyclerView rvStores;
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
 
     public HomeFragment() {
-        // Required empty public constructor
     }
 
     public static HomeFragment newInstance(String param1, String param2) {
@@ -77,12 +77,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void done(List<StoreFront> stores, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
+                    Log.e(TAG, STORE_ERROR, e);
                     return;
-                }
-                for (StoreFront store : stores) {
-                    Log.i(TAG, "Store:"+ store.getName());
-
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
