@@ -26,6 +26,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
         View view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull ProductListingAdapter.ViewHolder holder, int position) {
         ProductListing product = products.get(position);
@@ -56,7 +57,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
         }
 
-        public void bind(ProductListing product){
+        public void bind(ProductListing product) {
             tvProductPrice.setText(product.getProductPrice());
         }
     }

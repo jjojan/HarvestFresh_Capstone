@@ -20,6 +20,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String LOGOUT_MESSAGE = "You been logged out";
 
     private BottomNavigationView bottomNavigationView;
 
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.mLogout){
+        if (item.getItemId() == R.id.mLogout) {
             onLogout();
             return true;
         }
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private void onLogout() {
         ParseUser.logOutInBackground();
         ParseUser currentUser = ParseUser.getCurrentUser();
-        Toast.makeText(this, "You been logged out", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, LOGOUT_MESSAGE, Toast.LENGTH_SHORT).show();
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
         finish();

@@ -31,10 +31,9 @@ import java.util.List;
 public class SearchFragment extends Fragment {
 
     private static final String TAG = "SearchFragment";
-    public static final String SEARCH_REQUEST = "Searched: ";
-    public static final String SEARCH_CHANGE = "Search changed to ";
     public static final String STORE_KEY = "StoreName";
     public static final String ERROR_MESSAGE = String.valueOf(R.string.store_error);
+    public static final int SEARCH_LIMIT = 20;
 
     private RecyclerView rvStores;
     private StoreFrontAdapter fragmentAdapter;
@@ -85,7 +84,6 @@ public class SearchFragment extends Fragment {
                         SearchSuggestionProvider.AUTHORITY,
                         SearchSuggestionProvider.MODE);
                 suggestions.saveRecentQuery(query, null);
-                Log.d(TAG, SEARCH_REQUEST + searchValue);
                 queryFullSearch(searchValue);
                 return false;
             }
@@ -93,7 +91,6 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 CharSequence searchValue = svSearch.getQuery().toString();
-                Log.d(TAG, SEARCH_CHANGE + searchValue);
                 queryPartialSearch(searchValue);
                 return false;
             }
@@ -103,7 +100,7 @@ public class SearchFragment extends Fragment {
     private void queryPartialSearch(CharSequence searchValue) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(SEARCH_LIMIT);
         query.whereFullText(STORE_KEY, searchValue.toString());
 
         query.findInBackground(new FindCallback<StoreFront>() {
@@ -112,9 +109,6 @@ public class SearchFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, ERROR_MESSAGE, e);
                     return;
-                }
-                for (StoreFront store : stores) {
-                    Log.i(TAG, STORE_KEY + store.getName());
                 }
                 allStores.clear();
                 allStores.addAll(stores);
@@ -126,7 +120,7 @@ public class SearchFragment extends Fragment {
     private void queryFullSearch(CharSequence searchValue) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(SEARCH_LIMIT);
         query.whereFullText(STORE_KEY, searchValue.toString());
 
         query.findInBackground(new FindCallback<StoreFront>() {
@@ -136,13 +130,10 @@ public class SearchFragment extends Fragment {
                     Log.e(TAG, ERROR_MESSAGE, e);
                     return;
                 }
-                for (StoreFront store : stores) {
-                    Log.i(TAG,STORE_KEY + store.getName());
-                }
                 allStores.clear();
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
         });
     }
-    }
+}

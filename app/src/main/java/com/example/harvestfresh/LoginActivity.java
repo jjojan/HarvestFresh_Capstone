@@ -18,7 +18,8 @@ import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String TAG = "LoginActivity";
+    private static final String TAG = "LoginActivity";
+    private static final String ERROR_LOGIN = String.valueOf(R.string.login_error);
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -33,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(ParseUser.getCurrentUser() != null){
+        if (ParseUser.getCurrentUser() != null) {
             goMainActivity();
         }
 
@@ -44,10 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Log.d(TAG, "onClick Login");
-                    String username = etUsername.getText().toString();
-                    String password = etPassword.getText().toString();
-                    loginUser(username, password);
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+                loginUser(username, password);
             }
         });
 
@@ -66,17 +66,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String username, String password) {
 
-        Log.i(TAG, "Trying to Log in");
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                if (e != null){
-                    Log.e(TAG, "Error - Signup failed with ParseException" + e.toString());
+                if (e != null) {
+                    Log.e(TAG, ERROR_LOGIN + e.toString());
                     return;
-                    }
-            goMainActivity();
                 }
-            });
+                goMainActivity();
+            }
+        });
     }
 
     private void goMainActivity() {

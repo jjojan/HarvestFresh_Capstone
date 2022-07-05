@@ -25,14 +25,17 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    public static final String TAG = "HomeFragment";
+    private static final String TAG = "HomeFragment";
+    private static final String STORE_ERROR = String.valueOf(R.string.store_error);
+    private static final int SPAN_COUNT = 2;
+    private static final int STORE_LIMIT = 20;
+
 
     private RecyclerView rvStores;
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
 
     public HomeFragment() {
-        // Required empty public constructor
     }
 
     public static HomeFragment newInstance(String param1, String param2) {
@@ -52,13 +55,14 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         rvStores = view.findViewById(R.id.rvSearch);
         rvStores.setHasFixedSize(true);
 
-        final GridLayoutManager layout = new GridLayoutManager(getContext(), 2);
+        final GridLayoutManager layout = new GridLayoutManager(getContext(), SPAN_COUNT);
         rvStores.setLayoutManager(layout);
 
         allStores = new ArrayList<>();
@@ -71,18 +75,14 @@ public class HomeFragment extends Fragment {
     private void queryStores() {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(STORE_LIMIT);
 
         query.findInBackground(new FindCallback<StoreFront>() {
             @Override
             public void done(List<StoreFront> stores, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
+                    Log.e(TAG, STORE_ERROR, e);
                     return;
-                }
-                for (StoreFront store : stores) {
-                    Log.i(TAG, "Store:"+ store.getName());
-
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();

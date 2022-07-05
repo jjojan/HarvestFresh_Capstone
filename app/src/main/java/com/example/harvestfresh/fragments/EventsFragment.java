@@ -53,6 +53,7 @@ public class EventsFragment extends Fragment {
     private static final String ERROR_MESSAGE = "An error occured";
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
+    private static final int STORE_LIMIT = 20;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
@@ -73,9 +74,9 @@ public class EventsFragment extends Fragment {
     };
 
     @Override
-    public View onCreateView( LayoutInflater inflater,
-                              ViewGroup container,
-                              Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_events, container, false);
     }
 
@@ -88,17 +89,14 @@ public class EventsFragment extends Fragment {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLastLocation();
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
+
+        SupportMapFragment mapFragment = new SupportMapFragment();
+        getMapFragment(mapFragment);
 
         Places.initialize(getContext(), getString(R.string.google_maps_api_key));
 
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.fragmentAutoComplete);
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        AutocompleteSupportFragment autocompleteFragment = new AutocompleteSupportFragment();
+        autocompleteFragment = setCompleteFragment(autocompleteFragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -115,6 +113,24 @@ public class EventsFragment extends Fragment {
         });
     }
 
+    private AutocompleteSupportFragment setCompleteFragment(AutocompleteSupportFragment autocompleteFragment) {
+        autocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager()
+                        .findFragmentById(R.id.fragmentAutoComplete);
+        autocompleteFragment.setPlaceFields
+                (Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        return autocompleteFragment;
+    }
+
+    private SupportMapFragment getMapFragment(SupportMapFragment mapFragment) {
+         mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(callback);
+        }
+        return mapFragment;
+    }
+
     private void goPlace(LatLng searchLatLng, String placeName) {
         MarkerOptions markerOptions = new MarkerOptions().position(searchLatLng).title(placeName);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(searchLatLng));
@@ -125,21 +141,25 @@ public class EventsFragment extends Fragment {
     private void placeMarkers(ParseGeoPoint userLocation) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(STORE_LIMIT);
 
         query.findInBackground(new FindCallback<StoreFront>() {
             @Override
             public void done(List<StoreFront> stores, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, ERROR_MESSAGE, e);
                     return;
                 }
                 for (StoreFront store : stores) {
-                    LatLng newLocation = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
-                    ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude, newLocation.longitude);
+                    LatLng newLocation = new LatLng(store.getLocation().getLatitude(),
+                            store.getLocation().getLongitude());
+                    ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude,
+                            newLocation.longitude);
                     double milesDistance = Math.round(userLocation.distanceInMilesTo(storeMarker));
-                    Log.d(TAG, MILES_AWAY + MILES_AWAY);
-                    MarkerOptions newMarker = new MarkerOptions().position(newLocation).title(store.getName()).snippet(Double.toString(milesDistance) + MILES_AWAY).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
+                    MarkerOptions newMarker = new MarkerOptions()
+                            .position(newLocation)
+                            .title(store.getName())
+                            .snippet(Double.toString(milesDistance) + MILES_AWAY)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
                     markerMap.addMarker(newMarker);
                 }
                 allStores.addAll(stores);
@@ -149,9 +169,13 @@ public class EventsFragment extends Fragment {
     }
 
     private void fetchLastLocation() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE);
             return;
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -167,7 +191,7 @@ public class EventsFragment extends Fragment {
     }
 
     private void updateCurrentLocation() {
-        LatLng latLng = new LatLng (currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));

@@ -28,6 +28,8 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
+    private static final int PRODUCT_SIZE = 20;
+    private static final int REMOVE_INDEX = 0;
 
     private RecyclerView rvCart;
     private CartAdapter fragmentAdapter;
@@ -47,7 +49,8 @@ public class CartFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_cart, container, false);
     }
@@ -68,7 +71,7 @@ public class CartFragment extends Fragment {
 
     private void queryCart() {
         ParseQuery<Cart> query = ParseQuery.getQuery(Cart.class);
-        query.setLimit(20);
+        query.setLimit(PRODUCT_SIZE);
         query.whereEqualTo(Cart.KEY_USER, ParseUser.getCurrentUser());
 
         query.findInBackground(new FindCallback<Cart>() {
@@ -84,6 +87,6 @@ public class CartFragment extends Fragment {
     }
 
     private void removeItem() {
-        allCarts.remove(0);
+        allCarts.remove(REMOVE_INDEX);
     }
 }
