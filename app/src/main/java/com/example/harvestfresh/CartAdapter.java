@@ -1,7 +1,6 @@
 package com.example.harvestfresh;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -66,7 +60,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             super(itemView);
             tvProduct = itemView.findViewById(R.id.tvProduct);
             tvPrice = itemView.findViewById(R.id.tvPrice);
-            ibRemove = itemView.findViewById(R.id.ibRemove);
+            ibRemove = itemView.findViewById(R.id.ibAdd);
         }
 
         public void bind(Cart cart) {
