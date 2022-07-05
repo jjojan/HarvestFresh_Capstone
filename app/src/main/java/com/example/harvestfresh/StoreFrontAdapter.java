@@ -1,6 +1,7 @@
 package com.example.harvestfresh;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -67,12 +70,27 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
             ivImage = itemView.findViewById(R.id.ivStore);
         }
 
-        public void bind(StoreFront store){
+        public void bind(StoreFront store) {
             tvStoreName.setText(store.getName());
             ParseFile image = store.getImage();
-            if(image != null) {
+            if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage);
+
+                ivImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goDetailActivity();
+                    }
+                });
             }
+        }
+
+        private void goDetailActivity() {
+            int position = getAdapterPosition();
+            StoreFront store = stores.get(position);
+            Intent i = new Intent(context, DetailActivity.class);
+            i.putExtra(StoreFront.class.getSimpleName(), Parcels.wrap(store));
+            context.startActivity(i);
         }
     }
 }
