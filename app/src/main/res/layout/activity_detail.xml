@@ -7,8 +7,8 @@
 
     <TextView
         android:id="@+id/tvStoreName"
-        android:layout_width="285dp"
-        android:layout_height="72dp"
+        android:layout_width="359dp"
+        android:layout_height="61dp"
         android:layout_marginTop="16dp"
         android:text="Meat Farms"
         android:textColor="#121111"
@@ -18,10 +18,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="257dp"
-        android:layout_height="243dp"
+        android:id="@+id/ivStoreImage"
+        android:layout_width="411dp"
+        android:layout_height="258dp"
         android:layout_marginTop="96dp"
+        android:background="#000000"
+        android:padding="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.409"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +31,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProducts"
         android:layout_width="409dp"
         android:layout_height="366dp"
         android:paddingTop="25dp"
