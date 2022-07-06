@@ -1,9 +1,13 @@
 package com.example.harvestfresh;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +27,17 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
+    private static final long ALARM_TIME = 60000;
+    private static final int ALARM_CODE = 0;
+    private static final int FLAG_CODE = 0;
 
     private final Context context;
 
     public final List<ProductListing> products;
+
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+
 
     public ProductListingAdapter(Context context, List<ProductListing> products) {
         this.context = context;
@@ -37,18 +48,18 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     @Override
     public ProductListingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_product, 
+                .inflate(R.layout.item_product,
                         parent, false);
         createNotificationChannel();
         return new ViewHolder(view);
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = CHANNEL_NAME;
             String description = CHANNEL_DESCRIPTION;
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID ,name,importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
@@ -118,6 +129,26 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             Toast.makeText(context.getApplicationContext(),
                     CART_ADD,
                     Toast.LENGTH_SHORT).show();
+            setAlarm();
         }
+
+        private void setAlarm() {
+            alarmManager = (AlarmManager) context.
+                    getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+
+            pendingIntent = PendingIntent.getBroadcast(context,
+                    ALARM_CODE,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
+
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() +
+                            ALARM_TIME, pendingIntent);
+        }
+
     }
+
+
 }
