@@ -32,6 +32,7 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
+    private static final int POPUP_ZOOM = 0;
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -98,7 +99,7 @@ public class CartFragment extends Fragment {
         });
     }
 
-    private void cartCheckout(){
+    private void cartCheckout() {
         View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_checkout, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
@@ -108,9 +109,10 @@ public class CartFragment extends Fragment {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Buy");
+                for (int i = 0; i < allCarts.size(); i++) {
+                    allCarts.get(i).deleteInBackground();
+                }
                 fragmentAdapter.clear();
-                allCarts.clear();
                 popupWindow.dismiss();
             }
         });
@@ -122,6 +124,6 @@ public class CartFragment extends Fragment {
             }
         });
 
-        popupWindow.showAsDropDown(popupView, 0, 0);
+        popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 }
