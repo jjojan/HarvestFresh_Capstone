@@ -32,6 +32,7 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
+    private static final int CART_LIMIT = 20;
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -43,18 +44,14 @@ public class CartFragment extends Fragment {
     public CartFragment() {
     }
 
-    public static CartFragment newInstance() {
-        CartFragment fragment = new CartFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_cart, container, false);
     }
@@ -83,7 +80,7 @@ public class CartFragment extends Fragment {
 
     private void queryCart() {
         ParseQuery<Cart> query = ParseQuery.getQuery(Cart.class);
-        query.setLimit(20);
+        query.setLimit(CART_LIMIT);
         query.whereEqualTo(Cart.KEY_USER, ParseUser.getCurrentUser());
 
         query.findInBackground(new FindCallback<Cart>() {
