@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.engine.Resource;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
@@ -53,6 +52,7 @@ public class EventsFragment extends Fragment {
     private static final String ERROR_MESSAGE = "An error occured";
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
+    private static final int QUERY_SIZE = 20;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
@@ -67,15 +67,18 @@ public class EventsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
             mMap.setMyLocationEnabled(true);
             markerMap = googleMap;
         }
     };
 
     @Override
-    public View onCreateView( LayoutInflater inflater,
-                              ViewGroup container,
-                              Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_events, container, false);
     }
 
@@ -125,7 +128,7 @@ public class EventsFragment extends Fragment {
     private void placeMarkers(ParseGeoPoint userLocation) {
         ParseQuery<StoreFront> query = ParseQuery.getQuery(StoreFront.class);
         query.include(StoreFront.KEY_NAME);
-        query.setLimit(20);
+        query.setLimit(QUERY_SIZE);
 
         query.findInBackground(new FindCallback<StoreFront>() {
             @Override
@@ -166,7 +169,8 @@ public class EventsFragment extends Fragment {
     }
 
     private void updateCurrentLocation() {
-        LatLng latLng = new LatLng (currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng = new LatLng(currentLocation.getLatitude(),
+                currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));
