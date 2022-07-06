@@ -72,8 +72,12 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
         public void bind(StoreFront store) {
             tvStoreName.setText(store.getName());
             ParseFile image = store.getImage();
-            if (image != null) {
-                Glide.with(context).load(image.getUrl()).into(ivImage);
+
+            if (image == null) { return; }
+            else if (image != null) {
+                Glide.with(context)
+                        .load(image.getUrl())
+                        .into(ivImage);
 
                 ivImage.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -63,7 +63,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             super(itemView);
             tvProduct = itemView.findViewById(R.id.tvProduct);
             tvPrice = itemView.findViewById(R.id.tvPrice);
-            ibRemove = itemView.findViewById(R.id.ibAdd);
+            ibRemove = itemView.findViewById(R.id.ibRemove);
         }
 
         public void bind(Cart cart) {

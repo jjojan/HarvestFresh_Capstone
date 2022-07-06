@@ -65,7 +65,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             super(itemView);
             tvProductPrice = itemView.findViewById(R.id.tvPrice);
             tvProductName = itemView.findViewById(R.id.tvProduct);
-            ibAdd = itemView.findViewById(R.id.ibAdd);
+            ibAdd = itemView.findViewById(R.id.ibRemove);
 
         }
 

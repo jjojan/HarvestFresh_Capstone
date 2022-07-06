@@ -97,7 +97,10 @@ public class CartFragment extends Fragment {
 
     private void cartCheckout(){
         View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_checkout, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow
+                (popupView,
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.MATCH_PARENT);
 
         btnConfirm = popupView.findViewById(R.id.btnConfirm);
         btnCancel = popupView.findViewById(R.id.btnCancel);
@@ -105,7 +108,6 @@ public class CartFragment extends Fragment {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Buy");
                 fragmentAdapter.clear();
                 allCarts.clear();
                 popupWindow.dismiss();
