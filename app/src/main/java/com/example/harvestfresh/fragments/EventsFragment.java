@@ -169,7 +169,8 @@ public class EventsFragment extends Fragment {
     }
 
     private void updateCurrentLocation() {
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng = new LatLng(currentLocation.getLatitude(),
+                currentLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));
