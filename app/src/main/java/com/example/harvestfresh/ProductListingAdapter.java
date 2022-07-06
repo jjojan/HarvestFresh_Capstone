@@ -94,7 +94,6 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             Toast.makeText(context.getApplicationContext(),
                     CART_ADD,
                     Toast.LENGTH_SHORT).show();
-
         }
     }
 }
