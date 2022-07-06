@@ -138,7 +138,6 @@ public class EventsFragment extends Fragment {
                     LatLng newLocation = new LatLng(store.getLocation().getLatitude(), store.getLocation().getLongitude());
                     ParseGeoPoint storeMarker = new ParseGeoPoint(newLocation.latitude, newLocation.longitude);
                     double milesDistance = Math.round(userLocation.distanceInMilesTo(storeMarker));
-                    Log.d(TAG, MILES_AWAY + MILES_AWAY);
                     MarkerOptions newMarker = new MarkerOptions().position(newLocation).title(store.getName()).snippet(Double.toString(milesDistance) + MILES_AWAY).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
                     markerMap.addMarker(newMarker);
                 }
