@@ -44,4 +44,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation "com.google.android.gms:play-services-maps:18.0.2"
     implementation "com.google.android.gms:play-services-location-license:12.0.1"
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
 }
