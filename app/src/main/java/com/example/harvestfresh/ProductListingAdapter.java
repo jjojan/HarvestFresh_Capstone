@@ -1,6 +1,9 @@
 package com.example.harvestfresh;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,9 @@ import java.util.List;
 
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
     public static final String CART_ADD = "An Item has been added";
+    private static final String CHANNEL_ID = "HarvestFresh";
+    private static final String CHANNEL_NAME = "HarvestFreshChannel";
+    private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
 
     private final Context context;
 
@@ -30,8 +36,26 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     @NonNull
     @Override
     public ProductListingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_product, 
+                        parent, false);
+        createNotificationChannel();
         return new ViewHolder(view);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = CHANNEL_NAME;
+            String description = CHANNEL_DESCRIPTION;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID ,name,importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+
     }
 
     @Override
