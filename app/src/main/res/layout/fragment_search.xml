@@ -16,9 +16,9 @@
     <SearchView
         android:id="@+id/svSearch"
         android:layout_width="match_parent"
+        android:layout_height="72dp"
         android:queryHint="Search by Stores"
         android:searchSuggestAuthority="@string/search_provider"
-        android:layout_height="72dp"
-        android:searchSuggestSelection=" ?"/>
+        android:searchSuggestSelection=" ?" />
 
 </FrameLayout>

@@ -12,31 +12,35 @@ public class ProductListing extends ParseObject {
     public static final String KEY_IMAGE = "ProductImage";
     public static final String KEY_USER = "ProductOwner";
 
-    public String getProductName(){
+    public String getProductName() {
         return getString(KEY_NAME);
     }
 
-    public void setProductName(String productName){
+    public void setProductName(String productName) {
         put(KEY_NAME, productName);
     }
 
-    public String getProductPrice(){ return getString(KEY_COST); }
+    public String getProductPrice() {
+        return getString(KEY_COST);
+    }
 
-    public void setProductPrice(String price){
+    public void setProductPrice(String price) {
         put(KEY_COST, price);
     }
 
-    public ParseFile getImage() { return getParseFile(KEY_IMAGE); }
+    public ParseFile getImage() {
+        return getParseFile(KEY_IMAGE);
+    }
 
-    public void setImage(ParseFile parseFile){
+    public void setImage(ParseFile parseFile) {
         put(KEY_IMAGE, parseFile);
     }
 
-    public ParseUser getUser(){
+    public ParseUser getUser() {
         return getParseUser(KEY_USER);
     }
 
-    public void setUser(ParseUser user){
+    public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
 

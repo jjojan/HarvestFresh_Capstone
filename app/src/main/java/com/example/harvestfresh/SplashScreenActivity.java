@@ -7,18 +7,19 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
+
+    private final int DELAY_TIME = 2000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //handle signup
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                 finish();
-                //finish redirect if error
             }
-        }, 2000);
+        }, DELAY_TIME);
 
     }
 }

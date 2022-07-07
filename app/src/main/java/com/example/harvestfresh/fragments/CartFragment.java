@@ -32,6 +32,9 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
+
+    private static final int PRODUCT_SIZE = 20;
+    private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
 
@@ -81,6 +84,7 @@ public class CartFragment extends Fragment {
 
     private void queryCart() {
         ParseQuery<Cart> query = ParseQuery.getQuery(Cart.class);
+
         query.setLimit(CART_LIMIT);
         query.whereEqualTo(Cart.KEY_USER, ParseUser.getCurrentUser());
 
