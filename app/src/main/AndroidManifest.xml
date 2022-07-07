@@ -78,5 +78,7 @@
             android:name=".SearchSuggestionProvider"
             android:authorities="com/example/harvestfresh/SearchSuggestionProvider" />
 
+        <receiver android:name=".AlarmReceiver" />
+
     </application>
 </manifest>
