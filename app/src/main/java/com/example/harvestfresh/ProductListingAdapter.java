@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.util.List;
 
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
-    public static final String CART_ADD = "An Item has been added";
+    public static final String CART_ADD = "An item has been added to your cart";
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
