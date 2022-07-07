@@ -13,9 +13,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private final int INTENT_CODE = 0;
     private final int NOTIFY_ID = 123;
-    private final String CHANNEl_ID = "HarvestFresh";
+    private final int CART_IDLE_TIME = 20;
+    private final String CHANNEL_ID = "HarvestFresh";
     private final String NOTIFY_TITLE = "Your Cart is Waiting";
-    private final String NOTIFY_TEXT = "Your cart has been idle for 20 minutes, if you don't checkout it will be deleted soon.";
+    private final String NOTIFY_TEXT = "Your cart has been idle for " + CART_IDLE_TIME + " minutes, if you don't checkout it will be deleted soon.";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 i,
                 PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEl_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.hficon2)
                 .setContentTitle(NOTIFY_TITLE)
                 .setContentText(NOTIFY_TEXT)

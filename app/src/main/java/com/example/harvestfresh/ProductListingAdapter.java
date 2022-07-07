@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.parse.ParseUser;
 
+import java.time.Duration;
 import java.util.List;
 
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
@@ -27,7 +28,8 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
-    private static final long ALARM_TIME = 60000;
+    private static final long ALARM_WAITING_PERIOD_MINS  = 1;
+    private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
     private static final int FLAG_CODE = 0;
 
@@ -49,23 +51,24 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     public ProductListingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_product,
-                        parent, false);
+                        parent,
+                        false);
         createNotificationChannel();
         return new ViewHolder(view);
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = CHANNEL_NAME;
-            String description = CHANNEL_DESCRIPTION;
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
         }
+        CharSequence name = CHANNEL_NAME;
+        String description = CHANNEL_DESCRIPTION;
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
 
     }
 
@@ -144,8 +147,8 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     PendingIntent.FLAG_IMMUTABLE);
 
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() +
-                            ALARM_TIME, pendingIntent);
+                    SystemClock.elapsedRealtime() + ALARM_WAITING_PERIOD_MILLIS,
+                    pendingIntent);
         }
 
     }
