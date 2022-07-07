@@ -19,6 +19,7 @@ import android.widget.PopupWindow;
 
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
+import com.example.harvestfresh.ProductListingAdapter;
 import com.example.harvestfresh.R;
 import com.parse.FindCallback;
 import com.parse.Parse;

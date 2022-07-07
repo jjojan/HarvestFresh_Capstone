@@ -79,5 +79,7 @@
 
         <receiver android:name=".AlarmReceiver" />
 
+        <receiver android:name=".CartReceiver" />
+
     </application>
 </manifest>

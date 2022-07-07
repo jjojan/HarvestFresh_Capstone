@@ -29,10 +29,12 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
-    private static final long ALARM_WAITING_PERIOD_MINS  = 1;
+    private static final long ALARM_WAITING_PERIOD_MINS = 1;
     private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
-    private static final int FLAG_CODE = 0;
+    private static final long CART_WAITING_PERIOD_MINS = 2;
+    private static final long CART_WAITING_PERIOD_MILLIS = Duration.ofMinutes(CART_WAITING_PERIOD_MINS).toMillis();
+    private static final int CART_CODE = 1;
 
     private final Context context;
 
@@ -105,7 +107,6 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             tvProductPrice = itemView.findViewById(R.id.tvPrice);
             tvProductName = itemView.findViewById(R.id.tvProduct);
             ibAdd = itemView.findViewById(R.id.ibRemove);
-
         }
 
         public void bind(ProductListing product) {
@@ -151,6 +152,17 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     SystemClock.elapsedRealtime() + ALARM_WAITING_PERIOD_MILLIS,
                     pendingIntent);
+
+            intent = new Intent(context, CartReceiver.class);
+
+            pendingIntent = PendingIntent.getBroadcast(context,
+                    CART_CODE,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
+
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + CART_WAITING_PERIOD_MILLIS,
+                    pendingIntent);
         }
 
         private void cancelAlarm() {
@@ -161,7 +173,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     intent,
                     PendingIntent.FLAG_IMMUTABLE);
 
-            if (alarmManager == null){
+            if (alarmManager == null) {
                 alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             }
             alarmManager.cancel(pendingIntent);
