@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,6 +133,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             Toast.makeText(context.getApplicationContext(),
                     CART_ADD,
                     Toast.LENGTH_SHORT).show();
+            cancelAlarm();
             setAlarm();
         }
 
@@ -151,5 +153,18 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     pendingIntent);
         }
 
+        private void cancelAlarm() {
+            Intent intent = new Intent(context, AlarmReceiver.class);
+
+            pendingIntent = PendingIntent.getBroadcast(context,
+                    ALARM_CODE,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
+
+            if (alarmManager == null){
+                alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            }
+            alarmManager.cancel(pendingIntent);
+        }
     }
 }
