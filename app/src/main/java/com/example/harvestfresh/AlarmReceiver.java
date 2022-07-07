@@ -14,7 +14,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private final int INTENT_CODE = 0;
     private final int NOTIFY_ID = 123;
     private final String CHANNEl_ID = "HarvestFresh";
-    private final String NOTIFY_TITLE = "HarvestFresh - Your Cart is Waiting";
+    private final String NOTIFY_TITLE = "Your Cart is Waiting";
     private final String NOTIFY_TEXT = "Your cart has been idle for 20 minutes, if you don't checkout it will be deleted soon.";
 
     @Override
