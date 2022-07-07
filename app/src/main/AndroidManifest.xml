@@ -57,6 +57,10 @@
         <activity
             android:name=".SignupActivity"
             android:exported="true"></activity>
+            
+        <activity
+            android:name=".DetailActivity"
+            android:exported="true"></activity>
 
         <uses-library
             android:name="com.google.android.maps"

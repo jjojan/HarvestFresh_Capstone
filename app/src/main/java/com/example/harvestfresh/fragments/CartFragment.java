@@ -13,11 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.PopupWindow;
 
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
 import com.example.harvestfresh.R;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -28,19 +32,20 @@ import java.util.List;
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
+
     private static final int PRODUCT_SIZE = 20;
     private static final int REMOVE_INDEX = 0;
+    private static final int POPUP_ZOOM = 0;
+    private static final int CART_LIMIT = 20;
 
+    private Button btnCheckout;
+    private Button btnConfirm;
+    private Button btnCancel;
     private RecyclerView rvCart;
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
 
     public CartFragment() {
-    }
-
-    public static CartFragment newInstance() {
-        CartFragment fragment = new CartFragment();
-        return fragment;
     }
 
     @Override
@@ -59,6 +64,7 @@ public class CartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        btnCheckout = view.findViewById(R.id.btnCheckout);
         rvCart = view.findViewById(R.id.rvCart);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -67,11 +73,19 @@ public class CartFragment extends Fragment {
         rvCart.setAdapter(fragmentAdapter);
 
         queryCart();
+
+        btnCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cartCheckout();
+            }
+        });
     }
 
     private void queryCart() {
         ParseQuery<Cart> query = ParseQuery.getQuery(Cart.class);
-        query.setLimit(PRODUCT_SIZE);
+
+        query.setLimit(CART_LIMIT);
         query.whereEqualTo(Cart.KEY_USER, ParseUser.getCurrentUser());
 
         query.findInBackground(new FindCallback<Cart>() {
@@ -86,7 +100,36 @@ public class CartFragment extends Fragment {
         });
     }
 
-    private void removeItem() {
-        allCarts.remove(REMOVE_INDEX);
+    private void cartCheckout() {
+        View popupView = LayoutInflater
+                .from(getActivity())
+                .inflate(R.layout.popup_checkout, null);
+        final PopupWindow popupWindow =
+                new PopupWindow(popupView,
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.MATCH_PARENT);
+
+        btnConfirm = popupView.findViewById(R.id.btnConfirm);
+        btnCancel = popupView.findViewById(R.id.btnCancel);
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Cart cart : allCarts) {
+                    cart.deleteInBackground();
+                }
+                fragmentAdapter.clear();
+                popupWindow.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 }

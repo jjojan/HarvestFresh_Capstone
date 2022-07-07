@@ -9,4 +9,5 @@
     <string name="blank_field">one or more of the fields are blank</string>
     <string name="store_error">Error with fetching stores</string>
     <string name="search_provider">com/example/harvestfresh/SearchSuggestionProvider</string>
+    <string name="cart_added">An item has been added!</string>
 </resources>
