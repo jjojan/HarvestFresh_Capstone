@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,16 @@ import android.widget.PopupWindow;
 
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
+import com.example.harvestfresh.ProductListingAdapter;
 import com.example.harvestfresh.R;
+import com.example.harvestfresh.StoreFront;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

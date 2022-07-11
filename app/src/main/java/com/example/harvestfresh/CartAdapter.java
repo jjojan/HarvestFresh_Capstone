@@ -1,6 +1,10 @@
 package com.example.harvestfresh;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
+    private static final int ALARM_CODE = 0;
 
     private final Context context;
     public final List<Cart> carts;
+
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     public CartAdapter(Context context, List<Cart> carts) {
         this.context = context;
@@ -84,6 +92,21 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             carts.remove(position);
             cart.deleteInBackground();
             notifyItemRemoved(position);
+            cancelAlarm();
+        }
+
+        private void cancelAlarm() {
+            Intent intent = new Intent(context, AlarmReceiver.class);
+
+            pendingIntent = PendingIntent.getBroadcast(context,
+                    ALARM_CODE,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
+
+            if (alarmManager == null) {
+                alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            }
+            alarmManager.cancel(pendingIntent);
         }
     }
 }

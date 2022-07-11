@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,16 @@ import java.time.Duration;
 import java.util.List;
 
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
-    public static final String CART_ADD = "An Item has been added";
+    public static final String CART_ADD = "An item has been added to your cart";
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
-    private static final long ALARM_WAITING_PERIOD_MINS  = 1;
+    private static final long ALARM_WAITING_PERIOD_MINS = 1;
     private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
-    private static final int FLAG_CODE = 0;
+    private static final long CART_WAITING_PERIOD_MINS = 50;
+    private static final long CART_WAITING_PERIOD_MILLIS = Duration.ofMinutes(CART_WAITING_PERIOD_MINS).toMillis();
+    private static final int CART_CODE = 1;
 
     private final Context context;
 
@@ -104,7 +107,6 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             tvProductPrice = itemView.findViewById(R.id.tvPrice);
             tvProductName = itemView.findViewById(R.id.tvProduct);
             ibAdd = itemView.findViewById(R.id.ibRemove);
-
         }
 
         public void bind(ProductListing product) {
@@ -132,13 +134,12 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             Toast.makeText(context.getApplicationContext(),
                     CART_ADD,
                     Toast.LENGTH_SHORT).show();
-            setAlarm();
+            cancelAlarm();
+            setAlarm(AlarmSwitch.ALARM_RECEIVER, ALARM_CODE, ALARM_WAITING_PERIOD_MILLIS);
+            setAlarm(AlarmSwitch.CART_RECEIVER, CART_CODE, CART_WAITING_PERIOD_MILLIS);
         }
 
-        private void setAlarm() {
-            alarmManager = (AlarmManager) context.
-                    getSystemService(Context.ALARM_SERVICE);
-
+        private void cancelAlarm() {
             Intent intent = new Intent(context, AlarmReceiver.class);
 
             pendingIntent = PendingIntent.getBroadcast(context,
@@ -146,10 +147,37 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     intent,
                     PendingIntent.FLAG_IMMUTABLE);
 
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + ALARM_WAITING_PERIOD_MILLIS,
-                    pendingIntent);
+            if (alarmManager == null) {
+                if (context.getSystemService(Context.ALARM_SERVICE) == null) {
+                    return;
+                }
+                alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            }
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
+    private void setAlarm(AlarmSwitch alarmSwitch, int alarmCode, long alarmWaitingPeriodMillis) {
+        alarmManager = (AlarmManager) context.
+                getSystemService(Context.ALARM_SERVICE);
+        Intent intent = null;
+        if (alarmSwitch.equals(null)) {
+            return;
+        } else if (alarmSwitch.equals(AlarmSwitch.ALARM_RECEIVER)) {
+            intent = new Intent(context, AlarmReceiver.class);
+        } else {
+            intent = new Intent(context, CartReceiver.class);
         }
 
+        pendingIntent = PendingIntent.getBroadcast(context,
+                alarmCode,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE);
+
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + alarmWaitingPeriodMillis,
+                pendingIntent);
+
     }
+
 }

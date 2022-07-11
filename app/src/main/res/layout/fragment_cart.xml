@@ -17,7 +17,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCart"
         android:layout_width="match_parent"
-        android:layout_height="622dp"
+        android:layout_height="531dp"
         android:layout_marginBottom="0dp"
         android:paddingTop="50dp" />
 
@@ -28,5 +28,23 @@
         android:layout_marginLeft="150dp"
         android:layout_marginTop="600dp"
         android:text="Checkout" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="550dp"
+        android:text="Total:"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_marginTop="550dp"
+        android:text="TextView"
+        android:textSize="20sp" />
 
 </FrameLayout>
