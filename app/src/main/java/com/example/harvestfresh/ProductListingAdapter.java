@@ -148,7 +148,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     PendingIntent.FLAG_IMMUTABLE);
 
             if (alarmManager == null) {
-                if (context.getSystemService(Context.ALARM_SERVICE ) == null) {
+                if (context.getSystemService(Context.ALARM_SERVICE) == null) {
                     return;
                 }
                 alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -163,11 +163,9 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
         Intent intent = null;
         if (alarmSwitch.equals(null)) {
             return;
-        }
-        else if (alarmSwitch.equals(AlarmSwitch.ALARM_RECEIVER)) {
+        } else if (alarmSwitch.equals(AlarmSwitch.ALARM_RECEIVER)) {
             intent = new Intent(context, AlarmReceiver.class);
-        }
-        else {
+        } else {
             intent = new Intent(context, CartReceiver.class);
         }
 
