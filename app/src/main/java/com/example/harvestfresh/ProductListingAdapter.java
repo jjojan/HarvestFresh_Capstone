@@ -32,7 +32,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     private static final long ALARM_WAITING_PERIOD_MINS = 1;
     private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
-    private static final long CART_WAITING_PERIOD_MINS = 2;
+    private static final long CART_WAITING_PERIOD_MINS = 50;
     private static final long CART_WAITING_PERIOD_MILLIS = Duration.ofMinutes(CART_WAITING_PERIOD_MINS).toMillis();
     private static final int CART_CODE = 1;
 
@@ -135,34 +135,8 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     CART_ADD,
                     Toast.LENGTH_SHORT).show();
             cancelAlarm();
-            setAlarm();
-        }
-
-        private void setAlarm() {
-            alarmManager = (AlarmManager) context.
-                    getSystemService(Context.ALARM_SERVICE);
-
-            Intent intent = new Intent(context, AlarmReceiver.class);
-
-            pendingIntent = PendingIntent.getBroadcast(context,
-                    ALARM_CODE,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE);
-
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + ALARM_WAITING_PERIOD_MILLIS,
-                    pendingIntent);
-
-            intent = new Intent(context, CartReceiver.class);
-
-            pendingIntent = PendingIntent.getBroadcast(context,
-                    CART_CODE,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE);
-
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + CART_WAITING_PERIOD_MILLIS,
-                    pendingIntent);
+            setAlarm(AlarmSwitch.ALARM_RECEIVER, ALARM_CODE, ALARM_WAITING_PERIOD_MILLIS);
+            setAlarm(AlarmSwitch.CART_RECEIVER, CART_CODE, CART_WAITING_PERIOD_MILLIS);
         }
 
         private void cancelAlarm() {
@@ -174,9 +148,38 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                     PendingIntent.FLAG_IMMUTABLE);
 
             if (alarmManager == null) {
+                if (context.getSystemService(Context.ALARM_SERVICE ) == null) {
+                    return;
+                }
                 alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             }
             alarmManager.cancel(pendingIntent);
         }
     }
+
+    private void setAlarm(AlarmSwitch alarmSwitch, int alarmCode, long alarmWaitingPeriodMillis) {
+        alarmManager = (AlarmManager) context.
+                getSystemService(Context.ALARM_SERVICE);
+        Intent intent = null;
+        if (alarmSwitch.equals(null)) {
+            return;
+        }
+        else if (alarmSwitch.equals(AlarmSwitch.ALARM_RECEIVER)) {
+            intent = new Intent(context, AlarmReceiver.class);
+        }
+        else {
+            intent = new Intent(context, CartReceiver.class);
+        }
+
+        pendingIntent = PendingIntent.getBroadcast(context,
+                alarmCode,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE);
+
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + alarmWaitingPeriodMillis,
+                pendingIntent);
+
+    }
+
 }
