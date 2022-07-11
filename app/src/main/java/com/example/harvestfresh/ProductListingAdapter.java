@@ -32,7 +32,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     private static final long ALARM_WAITING_PERIOD_MINS = 1;
     private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
-    private static final long CART_WAITING_PERIOD_MINS = 2;
+    private static final long CART_WAITING_PERIOD_MINS = 50;
     private static final long CART_WAITING_PERIOD_MILLIS = Duration.ofMinutes(CART_WAITING_PERIOD_MINS).toMillis();
     private static final int CART_CODE = 1;
 
