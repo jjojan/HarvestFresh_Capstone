@@ -36,15 +36,15 @@
         android:layout_marginLeft="25dp"
         android:layout_marginTop="550dp"
         android:text="Total:"
-        android:textSize="20sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tvTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="217dp"
         android:layout_marginTop="550dp"
         android:text="TextView"
-        android:textSize="20sp" />
+        android:textSize="24sp" />
 
 </FrameLayout>

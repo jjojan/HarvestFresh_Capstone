@@ -32,7 +32,7 @@ public class CartReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         allCarts = new ArrayList<>();
-        fragmentAdapter = new CartAdapter(context, allCarts);
+//        fragmentAdapter = new CartAdapter(context, allCarts, );
         Intent i = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -14,6 +14,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.harvestfresh.fragments.CartFragment;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
@@ -21,13 +30,17 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private final Context context;
     public final List<Cart> carts;
+    private List<Cart> allCarts;
+    private CartAdapter fragmentAdapter;
+    private CartFragment cartFragment;
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
 
-    public CartAdapter(Context context, List<Cart> carts) {
+    public CartAdapter(Context context, List<Cart> carts, CartFragment cartFragment) {
         this.context = context;
         this.carts = carts;
+        this.cartFragment = cartFragment;
     }
 
     @NonNull
@@ -49,6 +62,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return carts.size();
+    }
+
+    @Override
+    public void registerAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
+        super.registerAdapterDataObserver(observer);
     }
 
     public void clear() {
@@ -92,6 +110,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             carts.remove(position);
             cart.deleteInBackground();
             notifyItemRemoved(position);
+            notifyDataSetChanged();
             cancelAlarm();
         }
 
