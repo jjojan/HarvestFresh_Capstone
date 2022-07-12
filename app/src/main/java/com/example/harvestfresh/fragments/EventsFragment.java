@@ -98,10 +98,6 @@ public class EventsFragment extends Fragment {
                         }, DELAY_TIME);
                     }
 
-//                    StoreFront store = mMarkertoStore.get(marker);
-//                    Intent i = new Intent(getContext(), DetailActivity.class);
-//                    i.putExtra(StoreFront.class.getSimpleName(), Parcels.wrap(store));
-//                    getContext().startActivity(i);
                     return false;
                 }
             });
