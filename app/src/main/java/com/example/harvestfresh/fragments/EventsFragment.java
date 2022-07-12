@@ -61,7 +61,7 @@ public class EventsFragment extends Fragment {
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
     private static final int QUERY_SIZE = 20;
-    private static final int DELAY_TIME = 1000;
+    private static final int DELAY_TIME = 500;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
