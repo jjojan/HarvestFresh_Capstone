@@ -7,18 +7,22 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.harvestfresh.fragments.CartFragment;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private static final int ALARM_CODE = 0;
+    private static final String DELETE_MESSAGE = "Item Deleted!";
 
     private final Context context;
     public final List<Cart> carts;
@@ -28,6 +32,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
+    private FrameLayout flCart;
 
     public CartAdapter(Context context, List<Cart> carts, CartFragment cartFragment) {
         this.context = context;
@@ -42,6 +47,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 .from(context)
                 .inflate(R.layout.item_cart, parent, false);
         //attachToRoot set to false so AdapterView is not sent to parent
+        flCart = view.findViewById(R.id.flCartLayout);
         return new ViewHolder(view);
     }
 
@@ -71,7 +77,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvProduct;
         private final TextView tvPrice;
@@ -103,6 +109,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             cart.deleteInBackground();
             notifyItemRemoved(position);
             notifyDataSetChanged();
+            Snackbar snackbar = Snackbar.make(flCart, DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
+            snackbar.show();
             cancelAlarm();
         }
 
@@ -119,5 +127,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             }
             alarmManager.cancel(pendingIntent);
         }
+
     }
 }

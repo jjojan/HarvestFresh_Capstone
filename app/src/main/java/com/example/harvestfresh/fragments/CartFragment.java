@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableList;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import com.example.harvestfresh.CartAdapter;
 import com.example.harvestfresh.ProductListingAdapter;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -46,6 +49,7 @@ public class CartFragment extends Fragment {
     private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
+    private static final String DELETE_MESSAGE = "Item Deleted!";
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -55,6 +59,7 @@ public class CartFragment extends Fragment {
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
     private double totalPrice = 0;
+    private FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -79,11 +84,15 @@ public class CartFragment extends Fragment {
         rvCart = view.findViewById(R.id.rvCart);
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
+        flCart = view.findViewById(R.id.flCartLayout);
 
         allCarts = new ArrayList<>();
 
         fragmentAdapter = new CartAdapter(getContext(), allCarts, this);
         rvCart.setAdapter(fragmentAdapter);
+
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(rvCart);
 
         queryCart();
 
@@ -159,4 +168,21 @@ public class CartFragment extends Fragment {
 
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0 , ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Snackbar snackbar = Snackbar.make(flCart, DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            int position = viewHolder.getAdapterPosition();
+            Cart cart = allCarts.get(position);
+            cart.deleteInBackground();
+            allCarts.remove(viewHolder.getAdapterPosition());
+            fragmentAdapter.notifyDataSetChanged();
+        }
+    };
 }
