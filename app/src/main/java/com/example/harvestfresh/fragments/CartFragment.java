@@ -59,7 +59,7 @@ public class CartFragment extends Fragment {
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
     private double totalPrice = 0;
-    private FrameLayout flCart;
+    public FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -113,7 +113,7 @@ public class CartFragment extends Fragment {
 
     public void getTotal() {
         totalPrice = 0;
-        for (Cart cart: allCarts) {
+        for (Cart cart : allCarts) {
             totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
         }
         tvTotal.setText(Double.toString(totalPrice));
@@ -168,7 +168,8 @@ public class CartFragment extends Fragment {
 
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
-    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0 , ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;

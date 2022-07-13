@@ -47,7 +47,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 .from(context)
                 .inflate(R.layout.item_cart, parent, false);
         //attachToRoot set to false so AdapterView is not sent to parent
-        flCart = view.findViewById(R.id.flCartLayout);
         return new ViewHolder(view);
     }
 
@@ -109,7 +108,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             cart.deleteInBackground();
             notifyItemRemoved(position);
             notifyDataSetChanged();
-            Snackbar snackbar = Snackbar.make(flCart, DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(cartFragment.flCart, DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
             snackbar.show();
             cancelAlarm();
         }

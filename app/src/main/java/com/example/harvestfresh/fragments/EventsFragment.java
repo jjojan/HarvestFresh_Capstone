@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -101,6 +102,7 @@ public class EventsFragment extends Fragment {
                     return false;
                 }
             });
+
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -199,6 +201,7 @@ public class EventsFragment extends Fragment {
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
 
                     Marker marker = markerMap.addMarker(newMarker);
+                    marker.setDraggable(true);
                     mMarkertoStore.put(marker, store);
                 }
                 allStores.addAll(stores);
@@ -241,7 +244,6 @@ public class EventsFragment extends Fragment {
 
         placeMarkers(userLocation);
     }
-
 
 }
 
