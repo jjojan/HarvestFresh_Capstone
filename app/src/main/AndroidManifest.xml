@@ -81,7 +81,7 @@
             android:value="@integer/google_play_services_version" />
 
         <meta-data android:name="com.parse.push.gcm_sender_id"
-            android:value="808974419018" />
+            android:value="@string/gcm_sender_id" />
 
         <provider
             android:name=".SearchSuggestionProvider"
