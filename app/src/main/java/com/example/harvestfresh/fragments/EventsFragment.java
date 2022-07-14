@@ -62,14 +62,14 @@ public class EventsFragment extends Fragment {
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
     private static final int QUERY_SIZE = 20;
-    private static final int DELAY_TIME = 500;
+    private static final int DELAY_TIME_MS = 500;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
     private final Map<Marker, StoreFront> mMarkertoStore = new HashMap<>();
-    boolean doubleClickPress = false;
+    private boolean doubleClickPress = false;
 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -96,7 +96,7 @@ public class EventsFragment extends Fragment {
                             public void run() {
                                 doubleClickPress = false;
                             }
-                        }, DELAY_TIME);
+                        }, DELAY_TIME_MS);
                     }
 
                     return false;

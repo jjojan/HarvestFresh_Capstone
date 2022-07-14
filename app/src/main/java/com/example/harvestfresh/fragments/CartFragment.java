@@ -101,8 +101,7 @@ public class CartFragment extends Fragment {
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                super.onChanged();
-                getTotal();
+                updateTotalTextView();
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +116,7 @@ public class CartFragment extends Fragment {
         return flCart;
     }
 
-    public void getTotal() {
+    public void updateTotalTextView() {
         totalPrice = 0;
         for (Cart cart : allCarts) {
             totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
@@ -175,9 +174,13 @@ public class CartFragment extends Fragment {
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 
-    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper
+            .SimpleCallback(0,
+            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
