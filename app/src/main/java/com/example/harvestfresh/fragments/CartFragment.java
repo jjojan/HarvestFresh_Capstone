@@ -37,6 +37,7 @@ import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
@@ -54,6 +55,7 @@ public class CartFragment extends Fragment {
     private Button btnCheckout;
     private Button btnConfirm;
     private Button btnCancel;
+    private TextView tvCartEmpty;
     private TextView tvTotal;
     private RecyclerView rvCart;
     private CartAdapter fragmentAdapter;
@@ -85,6 +87,7 @@ public class CartFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
+        tvCartEmpty = view.findViewById(R.id.tvCartEmpty);
 
         allCarts = new ArrayList<>();
 
@@ -116,7 +119,7 @@ public class CartFragment extends Fragment {
         for (Cart cart : allCarts) {
             totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
         }
-        tvTotal.setText(Double.toString(totalPrice));
+        tvTotal.setText(String.format("%.2f", totalPrice));
     }
 
     private void queryCart() {

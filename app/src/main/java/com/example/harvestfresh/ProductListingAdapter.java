@@ -4,10 +4,13 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +19,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.parse.FunctionCallback;
+import com.parse.Parse;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
@@ -116,8 +127,47 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
                 @Override
                 public void onClick(View v) {
                     addItem();
+                    pushCloudReminder();
                 }
             });
+        }
+
+        private void pushCloudReminder() {
+            ArrayList<String> channels = new ArrayList<>();
+            channels.add("Reminders");
+            ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+            installation.put("GCMSenderId", "808974419018");
+            installation.put("channels", channels);
+            installation.saveInBackground();
+            final HashMap<String, String> params = new HashMap<>();
+
+
+            ParseCloud.callFunctionInBackground("pushsample", params, new FunctionCallback<Object>() {
+                @Override
+                public void done(Object response, ParseException exc) {
+                    if(exc == null) {
+                        // The function executed, but still has to check the response
+                        alertDisplayer("Successful Push","Check on your phone the notifications to confirm!");
+                    }
+                    else {
+                        // Something went wrong
+                    }
+                }
+            });
+        }
+
+        private void alertDisplayer(String title, String message) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog ok = builder.create();
+            ok.show();
         }
 
         private void addItem() {
