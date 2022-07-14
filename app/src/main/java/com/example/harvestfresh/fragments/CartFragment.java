@@ -101,8 +101,7 @@ public class CartFragment extends Fragment {
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                super.onChanged();
-                getTotal();
+                updateTotalTextView();
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +116,7 @@ public class CartFragment extends Fragment {
         return flCart;
     }
 
-    public void getTotal() {
+    public void updateTotalTextView() {
         totalPrice = 0;
         for (Cart cart : allCarts) {
             totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
