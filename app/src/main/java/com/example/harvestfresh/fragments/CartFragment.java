@@ -1,5 +1,6 @@
 package com.example.harvestfresh.fragments;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.media.Image;
 import android.os.Bundle;
@@ -49,7 +50,6 @@ public class CartFragment extends Fragment {
     private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
-    private static final String DELETE_MESSAGE = "Item Deleted!";
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -59,7 +59,8 @@ public class CartFragment extends Fragment {
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
     private double totalPrice = 0;
-    public FrameLayout flCart;
+    private String DELETE_MESSAGE;
+    private FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -85,6 +86,7 @@ public class CartFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
+        DELETE_MESSAGE = getString(R.string.item_deleted);
 
         allCarts = new ArrayList<>();
 
@@ -109,6 +111,10 @@ public class CartFragment extends Fragment {
                 cartCheckout();
             }
         });
+    }
+
+    public FrameLayout getCartLayout() {
+        return flCart;
     }
 
     public void getTotal() {
@@ -185,5 +191,6 @@ public class CartFragment extends Fragment {
             allCarts.remove(viewHolder.getAdapterPosition());
             fragmentAdapter.notifyDataSetChanged();
         }
+
     };
 }
