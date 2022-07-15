@@ -1,6 +1,7 @@
 package com.example.harvestfresh.fragments;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.harvestfresh.DetailActivity;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
@@ -67,6 +69,7 @@ public class EventsFragment extends Fragment {
     private GoogleMap mMap;
     private GoogleMap markerMap;
     private StoreFrontAdapter fragmentAdapter;
+    private LottieAnimationView rvLoading;
     private List<StoreFront> allStores;
     private final Map<Marker, StoreFront> mMarkertoStore = new HashMap<>();
     boolean doubleClickPress = false;
@@ -98,7 +101,6 @@ public class EventsFragment extends Fragment {
                             }
                         }, DELAY_TIME);
                     }
-
                     return false;
                 }
             });
@@ -124,6 +126,7 @@ public class EventsFragment extends Fragment {
 
         allStores = new ArrayList<>();
         fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
+        rvLoading = view.findViewById(R.id.rvLoading);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLastLocation();
@@ -147,6 +150,33 @@ public class EventsFragment extends Fragment {
             @Override
             public void onError(@NonNull Status status) {
                 Log.e(TAG, ERROR_MESSAGE + status);
+            }
+        });
+
+        animationControl(rvLoading);
+    }
+
+    private void animationControl(LottieAnimationView rvLoading) {
+        rvLoading.playAnimation();
+        rvLoading.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                rvLoading.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
             }
         });
     }

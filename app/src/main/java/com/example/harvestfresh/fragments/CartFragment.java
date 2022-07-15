@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
 import com.example.harvestfresh.ProductListingAdapter;
@@ -87,7 +88,6 @@ public class CartFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
-        tvCartEmpty = view.findViewById(R.id.tvCartEmpty);
 
         allCarts = new ArrayList<>();
 
@@ -112,6 +112,8 @@ public class CartFragment extends Fragment {
                 cartCheckout();
             }
         });
+
+
     }
 
     public void getTotal() {

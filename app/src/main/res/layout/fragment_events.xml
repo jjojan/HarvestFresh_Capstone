@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,9 +8,19 @@
 
     <fragment
         android:id="@+id/map"
-        class="com.google.android.gms.maps.SupportMapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/rvLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        app:lottie_autoPlay="true"
+        app:lottie_imageAssetsFolder="raw"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/insiderloading" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -20,6 +31,7 @@
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
             android:layout_height="42dp" />
+
     </androidx.cardview.widget.CardView>
 
 </FrameLayout>
