@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAdapter.ViewHolder> {
     public static final String CART_ADD = "An item has been added to your cart";
     private static final String CHANNEL_ID = "HarvestFresh";
@@ -180,9 +182,10 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             cart.saveInBackground();
             notifyDataSetChanged();
 
-            Toast.makeText(context.getApplicationContext(),
+            Toasty.success(context.getApplicationContext(),
                     CART_ADD,
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT,
+                    true).show();
             cancelAlarm();
             setAlarm(AlarmSwitch.ALARM_RECEIVER, ALARM_CODE, ALARM_WAITING_PERIOD_MILLIS);
             setAlarm(AlarmSwitch.CART_RECEIVER, CART_CODE, CART_WAITING_PERIOD_MILLIS);

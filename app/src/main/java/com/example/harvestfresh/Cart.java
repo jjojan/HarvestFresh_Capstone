@@ -1,5 +1,7 @@
 package com.example.harvestfresh;
 
+import androidx.room.ColumnInfo;
+
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;

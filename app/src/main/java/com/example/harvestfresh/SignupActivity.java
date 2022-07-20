@@ -14,6 +14,8 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import es.dmoral.toasty.Toasty;
+
 public class SignupActivity extends AppCompatActivity {
 
     private Button btnFinalSignup;
@@ -47,11 +49,11 @@ public class SignupActivity extends AppCompatActivity {
                 if (newUsername.isEmpty()
                         || newPassword.isEmpty()
                         || confirmPassword.isEmpty()) {
-                    Toast.makeText(SignupActivity.this, BLANK_FIELDS, Toast.LENGTH_SHORT).show();
+                    Toasty.error(SignupActivity.this, BLANK_FIELDS, Toast.LENGTH_SHORT, true).show();
                 } else if (newPassword == confirmPassword) {
                     signupUser(newUsername, newPassword);
                 } else {
-                    Toast.makeText(SignupActivity.this, PASSWORD_MISMATCH, Toast.LENGTH_SHORT).show();
+                    Toasty.error(SignupActivity.this, PASSWORD_MISMATCH, Toast.LENGTH_SHORT, true).show();
                 }
             }
         });
