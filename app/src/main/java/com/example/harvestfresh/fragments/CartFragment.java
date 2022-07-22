@@ -1,5 +1,6 @@
 package com.example.harvestfresh.fragments;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.media.Image;
 import android.os.Bundle;
@@ -50,7 +51,6 @@ public class CartFragment extends Fragment {
     private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
-    private static final String DELETE_MESSAGE = "Item Deleted!";
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -61,7 +61,8 @@ public class CartFragment extends Fragment {
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
     private double totalPrice = 0;
-    public FrameLayout flCart;
+    private String DELETE_MESSAGE;
+    private FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -87,10 +88,9 @@ public class CartFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
-        tvCartEmpty = view.findViewById(R.id.tvCartEmpty);
-
+        tvCartEmpty = view.findViewById(R.id.tvEmpty);
+        DELETE_MESSAGE = getString(R.string.item_deleted);
         allCarts = new ArrayList<>();
-
         fragmentAdapter = new CartAdapter(getContext(), allCarts, this);
         rvCart.setAdapter(fragmentAdapter);
 
@@ -102,8 +102,7 @@ public class CartFragment extends Fragment {
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                super.onChanged();
-                getTotal();
+                updateTotalTextView();
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +113,11 @@ public class CartFragment extends Fragment {
         });
     }
 
-    public void getTotal() {
+    public FrameLayout getCartLayout() {
+        return flCart;
+    }
+
+    public void updateTotalTextView() {
         totalPrice = 0;
         for (Cart cart : allCarts) {
             totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
@@ -172,9 +175,13 @@ public class CartFragment extends Fragment {
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 
-    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper
+            .SimpleCallback(0,
+            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -188,5 +195,6 @@ public class CartFragment extends Fragment {
             allCarts.remove(viewHolder.getAdapterPosition());
             fragmentAdapter.notifyDataSetChanged();
         }
+
     };
 }

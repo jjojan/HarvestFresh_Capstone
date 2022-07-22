@@ -17,13 +17,10 @@ import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
