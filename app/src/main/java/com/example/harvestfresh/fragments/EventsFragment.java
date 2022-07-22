@@ -1,8 +1,10 @@
 package com.example.harvestfresh.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,12 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.harvestfresh.DetailActivity;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
@@ -28,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -39,9 +44,13 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class EventsFragment extends Fragment {
@@ -53,11 +62,14 @@ public class EventsFragment extends Fragment {
     private static final String MILES_AWAY = " Miles Away";
     private static final int ZOOM_SIZE = 12;
     private static final int QUERY_SIZE = 20;
+    private static final int DELAY_TIME_MS = 500;
 
     private GoogleMap mMap;
     private GoogleMap markerMap;
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
+    private final Map<Marker, StoreFront> mMarkertoStore = new HashMap<>();
+    private boolean doubleClickPress = false;
 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -67,6 +79,30 @@ public class EventsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             mMap = googleMap;
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+
+                    if (doubleClickPress) {
+                        StoreFront store = mMarkertoStore.get(marker);
+                        Intent i = new Intent(getContext(), DetailActivity.class);
+                        i.putExtra(StoreFront.class.getSimpleName(), Parcels.wrap(store));
+                        getContext().startActivity(i);
+                    } else {
+                        doubleClickPress = true;
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                doubleClickPress = false;
+                            }
+                        }, DELAY_TIME_MS);
+                    }
+
+                    return false;
+                }
+            });
+
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
@@ -125,7 +161,7 @@ public class EventsFragment extends Fragment {
     }
 
     private SupportMapFragment getMapFragment(SupportMapFragment mapFragment) {
-         mapFragment =
+        mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
@@ -136,7 +172,7 @@ public class EventsFragment extends Fragment {
     private void goPlace(LatLng searchLatLng, String placeName) {
         MarkerOptions markerOptions = new MarkerOptions().position(searchLatLng).title(placeName);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(searchLatLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchLatLng, 12));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchLatLng, ZOOM_SIZE));
         mMap.addMarker(markerOptions);
     }
 
@@ -164,7 +200,9 @@ public class EventsFragment extends Fragment {
                             .snippet(Double.toString(milesDistance) + MILES_AWAY)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.mapsicon));
 
-                    markerMap.addMarker(newMarker);
+                    Marker marker = markerMap.addMarker(newMarker);
+                    marker.setDraggable(true);
+                    mMarkertoStore.put(marker, store);
                 }
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
@@ -178,7 +216,7 @@ public class EventsFragment extends Fragment {
                 && ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE);
             return;
         }
@@ -197,7 +235,7 @@ public class EventsFragment extends Fragment {
     private void updateCurrentLocation() {
         LatLng latLng = new LatLng(currentLocation.getLatitude(),
                 currentLocation.getLongitude());
-                
+
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(CURRENT_LOCATION);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_SIZE));
@@ -206,5 +244,6 @@ public class EventsFragment extends Fragment {
 
         placeMarkers(userLocation);
     }
+
 }
 

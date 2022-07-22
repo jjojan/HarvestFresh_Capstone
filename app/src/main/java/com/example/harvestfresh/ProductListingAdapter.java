@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +105,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             super(itemView);
             tvProductPrice = itemView.findViewById(R.id.tvPrice);
             tvProductName = itemView.findViewById(R.id.tvProduct);
-            ibAdd = itemView.findViewById(R.id.ibRemove);
+            ibAdd = itemView.findViewById(R.id.ibAdd);
         }
 
         public void bind(ProductListing product) {

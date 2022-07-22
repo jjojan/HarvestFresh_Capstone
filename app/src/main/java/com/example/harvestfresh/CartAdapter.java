@@ -4,25 +4,20 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.harvestfresh.fragments.CartFragment;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
+import com.google.android.material.snackbar.Snackbar;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
@@ -33,9 +28,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private List<Cart> allCarts;
     private CartAdapter fragmentAdapter;
     private CartFragment cartFragment;
+    private String DELETE_MESSAGE;
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
+    private FrameLayout flCart;
 
     public CartAdapter(Context context, List<Cart> carts, CartFragment cartFragment) {
         this.context = context;
@@ -46,10 +43,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @NonNull
     @Override
     public CartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //attachToRoot set to false so AdapterView is not sent to parent
         View view = LayoutInflater
                 .from(context)
                 .inflate(R.layout.item_cart, parent, false);
-        //attachToRoot set to false so AdapterView is not sent to parent
         return new ViewHolder(view);
     }
 
@@ -79,7 +76,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvProduct;
         private final TextView tvPrice;
@@ -90,6 +87,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             tvProduct = itemView.findViewById(R.id.tvProduct);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ibRemove = itemView.findViewById(R.id.ibRemove);
+            DELETE_MESSAGE = context.getString(R.string.item_deleted);
         }
 
         public void bind(Cart cart) {
@@ -111,6 +109,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             cart.deleteInBackground();
             notifyItemRemoved(position);
             notifyDataSetChanged();
+            Snackbar snackbar = Snackbar.make(cartFragment.getCartLayout(), DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
+            snackbar.show();
             cancelAlarm();
         }
 
@@ -127,5 +127,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             }
             alarmManager.cancel(pendingIntent);
         }
+
     }
 }
