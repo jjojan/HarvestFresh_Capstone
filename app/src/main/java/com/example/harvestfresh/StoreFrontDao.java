@@ -15,4 +15,8 @@ public interface StoreFrontDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertStoreFront(StoreFrontRoom... storeFrontRooms);
+
+    @Query("SELECT * FROM StoreFrontRoom WHERE store_name LIKE '%' || :search || '%'")
+    public List<StoreFrontRoom> findStorewithName(String search);
+
 }

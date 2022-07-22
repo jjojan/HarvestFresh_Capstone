@@ -21,6 +21,14 @@ public class StoreFront extends ParseObject {
     public static final String KEY_USER = "User";
     public static final String KEY_LOCATION = "StoreLocation";
 
+    public StoreFront() {
+
+    }
+
+    public StoreFront(StoreFrontRoom storeFrontRoom) {
+        setName(storeFrontRoom.name);
+    }
+
     public String getName() { return getString(KEY_NAME);}
 
     public void setName(String name) {

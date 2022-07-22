@@ -40,7 +40,13 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
     public static final String CART_ADD = "An item has been added to your cart";
     private static final String CHANNEL_ID = "HarvestFresh";
     private static final String CHANNEL_NAME = "HarvestFreshChannel";
+    private static final String PUSH_ID = "Reminders";
     private static final String CHANNEL_DESCRIPTION = "Channel for Alarm Manager";
+    private static final String PUSH_MESSAGE = "Item has been added to your cart, be sure to checkout soon.";
+    private static final String SENDER_ID = "GCMSenderId";
+    private static final String SENDER_CODE = "808974419018";
+    private static final String CHANNELS = "channels";
+    private static final String BUTTON_TEXT = "OK";
     private static final long ALARM_WAITING_PERIOD_MINS = 1;
     private static final long ALARM_WAITING_PERIOD_MILLIS = Duration.ofMinutes(ALARM_WAITING_PERIOD_MINS).toMillis();
     private static final int ALARM_CODE = 0;
@@ -136,20 +142,20 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
 
         private void pushCloudReminder() {
             ArrayList<String> channels = new ArrayList<>();
-            channels.add("Reminders");
+            channels.add(PUSH_ID);
             ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-            installation.put("GCMSenderId", "808974419018");
-            installation.put("channels", channels);
+            installation.put(SENDER_ID, SENDER_CODE);
+            installation.put(CHANNELS, channels);
             installation.saveInBackground();
             final HashMap<String, String> params = new HashMap<>();
 
 
-            ParseCloud.callFunctionInBackground("pushsample", params, new FunctionCallback<Object>() {
+            ParseCloud.callFunctionInBackground(PUSH_ID, params, new FunctionCallback<Object>() {
                 @Override
                 public void done(Object response, ParseException exc) {
                     if(exc == null) {
                         // The function executed, but still has to check the response
-                        alertDisplayer("Successful Push","Check on your phone the notifications to confirm!");
+                        alertDisplayer(PUSH_ID,PUSH_MESSAGE);
                     }
                     else {
                         // Something went wrong
@@ -162,7 +168,7 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             AlertDialog.Builder builder = new AlertDialog.Builder(context)
                     .setTitle(title)
                     .setMessage(message)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(BUTTON_TEXT, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();

@@ -1,7 +1,5 @@
 package com.example.harvestfresh;
 
-import androidx.room.ColumnInfo;
-
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -41,5 +39,7 @@ public class Cart extends ParseObject {
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
     }
+
+    public CartRoom toCartRoom() { return new CartRoom(this); }
 
 }

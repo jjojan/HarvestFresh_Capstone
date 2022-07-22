@@ -13,6 +13,7 @@ import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -50,7 +51,8 @@ public class HomeFragment extends Fragment {
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
     private List<StoreFrontRoom> savedStores;
-    private StoreFrontDao storeFrontDao;
+    public  StoreFrontDao storeFrontDao;
+    public HarvestFreshDatabase harvestFreshDatabase;
 
     public HomeFragment() {
     }
@@ -87,7 +89,7 @@ public class HomeFragment extends Fragment {
         fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
         rvStores.setAdapter(fragmentAdapter);
 
-        HarvestFreshDatabase harvestFreshDatabase = Room.databaseBuilder(getContext().getApplicationContext(),
+        harvestFreshDatabase = Room.databaseBuilder(getContext().getApplicationContext(),
                 HarvestFreshDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
         storeFrontDao = harvestFreshDatabase.storeFrontDao();
 
@@ -130,9 +132,6 @@ public class HomeFragment extends Fragment {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        for(StoreFront store: stores) {
-
-                        }
                         storeFrontDao.insertStoreFront(savedStores.toArray(new StoreFrontRoom[0]));
                         List<StoreFrontRoom> savedStores = storeFrontDao.recentStores();
                     }

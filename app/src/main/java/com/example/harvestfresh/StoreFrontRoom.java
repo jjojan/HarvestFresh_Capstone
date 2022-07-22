@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.Query;
 
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -21,7 +22,7 @@ public class StoreFrontRoom {
     @PrimaryKey
     public String id;
 
-    @ColumnInfo
+    @ColumnInfo(name = "store_name")
     public String name;
 
     @ColumnInfo
@@ -39,7 +40,6 @@ public class StoreFrontRoom {
 
     }
 
-
     public StoreFrontRoom (StoreFront storeFront){
         this.name = storeFront.getName();
         this.image = storeFront.getImage().getUrl();
@@ -49,11 +49,12 @@ public class StoreFrontRoom {
     public static List<StoreFront> getStoreFrontRooms (List<StoreFrontRoom> storesFromRooms){
       List<StoreFront> storeFronts = new ArrayList<>();
       for (StoreFrontRoom storeFront: storesFromRooms) {
-          StoreFront storeFrontRoom = new StoreFront();
-          storeFrontRoom.setName(storeFront.name);
+          StoreFront storeFrontRoom = new StoreFront(storeFront);
           storeFronts.add(storeFrontRoom);
           }
       return storeFronts;
     }
+
+    public StoreFront toStoreFront() { return new StoreFront(this); }
 
 }
