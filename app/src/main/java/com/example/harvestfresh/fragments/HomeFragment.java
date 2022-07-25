@@ -26,13 +26,10 @@ import com.example.harvestfresh.StoreFrontAdapter;
 import com.example.harvestfresh.StoreFrontDao;
 import com.example.harvestfresh.StoreFrontRoom;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;

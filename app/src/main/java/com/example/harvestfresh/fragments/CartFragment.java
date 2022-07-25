@@ -1,6 +1,7 @@
 package com.example.harvestfresh.fragments;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.media.Image;
 import android.net.ConnectivityManager;
@@ -80,6 +81,8 @@ public class CartFragment extends Fragment {
     private CartRoomDao cartDao;
     public FrameLayout flCart;
     private LottieAnimationView avLoading;
+    private String DELETE_MESSAGE;
+    private FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -107,9 +110,9 @@ public class CartFragment extends Fragment {
         flCart = view.findViewById(R.id.flCartLayout);
         savedCart = new ArrayList<>();
         avLoading = view.findViewById(R.id.avFood);
-
+        tvCartEmpty = view.findViewById(R.id.tvEmpty);
+        DELETE_MESSAGE = getString(R.string.item_deleted);
         allCarts = new ArrayList<>();
-
         fragmentAdapter = new CartAdapter(getContext(), allCarts, this);
         rvCart.setAdapter(fragmentAdapter);
 
@@ -145,8 +148,7 @@ public class CartFragment extends Fragment {
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                super.onChanged();
-                getTotal();
+                updateTotalTextView();
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +166,11 @@ public class CartFragment extends Fragment {
 
     }
 
-    public void getTotal() {
+    public FrameLayout getCartLayout() {
+        return flCart;
+    }
+
+    public void updateTotalTextView() {
         totalPrice = 0;
         if (isNetworkConnected()) {
             for (Cart cart : allCarts) {
@@ -242,9 +248,13 @@ public class CartFragment extends Fragment {
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 
-    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper
+            .SimpleCallback(0,
+            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -258,6 +268,7 @@ public class CartFragment extends Fragment {
             allCarts.remove(viewHolder.getAdapterPosition());
             fragmentAdapter.notifyDataSetChanged();
         }
+
     };
 
     private boolean isNetworkConnected() {
