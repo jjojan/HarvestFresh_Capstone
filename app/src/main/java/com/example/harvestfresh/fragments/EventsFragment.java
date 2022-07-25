@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -135,7 +134,7 @@ public class EventsFragment extends Fragment {
 
         allStores = new ArrayList<>();
         fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
-        rvLoading = view.findViewById(R.id.rvLoading);
+        rvLoading = view.findViewById(R.id.avFood);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLastLocation();

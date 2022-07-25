@@ -50,4 +50,15 @@
         android:text="0.00"
         android:textSize="24sp" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/avFood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:visibility="invisible"
+        app:lottie_autoPlay="true"
+        app:lottie_imageAssetsFolder="raw"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/foodanimation" />
+
 </FrameLayout>

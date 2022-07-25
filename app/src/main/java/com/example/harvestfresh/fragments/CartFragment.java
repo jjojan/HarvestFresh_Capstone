@@ -1,5 +1,6 @@
 package com.example.harvestfresh.fragments;
 
+import android.animation.Animator;
 import android.database.DataSetObserver;
 import android.media.Image;
 import android.net.ConnectivityManager;
@@ -78,6 +79,7 @@ public class CartFragment extends Fragment {
     private List<CartRoom> savedCart;
     private CartRoomDao cartDao;
     public FrameLayout flCart;
+    private LottieAnimationView avLoading;
 
     public CartFragment() {
     }
@@ -104,6 +106,7 @@ public class CartFragment extends Fragment {
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
         savedCart = new ArrayList<>();
+        avLoading = view.findViewById(R.id.avFood);
 
         allCarts = new ArrayList<>();
 
@@ -224,6 +227,8 @@ public class CartFragment extends Fragment {
                 }
                 fragmentAdapter.clear();
                 popupWindow.dismiss();
+                avLoading.setVisibility(View.VISIBLE);
+                avLoading.playAnimation();
             }
         });
 
@@ -260,4 +265,29 @@ public class CartFragment extends Fragment {
 
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
+
+    private void animationControl(LottieAnimationView rvLoading) {
+        rvLoading.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                avLoading.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+    }
+
 }
