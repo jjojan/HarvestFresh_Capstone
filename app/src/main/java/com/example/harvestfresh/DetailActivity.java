@@ -2,6 +2,7 @@ package com.example.harvestfresh;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     StoreFront store;
     TextView tvStoreName;
     ImageView ivStoreImage;
+    TextView tvEmpty;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class DetailActivity extends AppCompatActivity {
 
         tvStoreName = (TextView) findViewById(R.id.tvStoreName);
         ivStoreImage = (ImageView) findViewById(R.id.ivStoreImage);
+        tvEmpty = (TextView) findViewById(R.id.tvEmpty);
 
         store = (StoreFront) Parcels.unwrap(getIntent().getParcelableExtra(StoreFront.class.getSimpleName()));
 
@@ -76,6 +79,9 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 allProducts.addAll(products);
                 fragmentAdapter.notifyDataSetChanged();
+                if (allProducts.size() == 0) {
+                    tvEmpty.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

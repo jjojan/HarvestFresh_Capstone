@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "808974419018",
+    "project_id": "harvestfresh-2d0b5",
+    "storage_bucket": "harvestfresh-2d0b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808974419018:android:f430ddba24c7fa2d9e12b3",
+        "android_client_info": {
+          "package_name": "com.example.harvestfresh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808974419018-vb04s2gc3rqnah897e5b0guo8pkd7446.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_8TYi0C-b6vR49BdZZTLDWkbMQZdiMcs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808974419018-vb04s2gc3rqnah897e5b0guo8pkd7446.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
