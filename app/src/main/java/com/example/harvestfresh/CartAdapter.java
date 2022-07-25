@@ -23,13 +23,13 @@ import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private static final int ALARM_CODE = 0;
-    private static final String DELETE_MESSAGE = "Item Deleted!";
 
     private final Context context;
     public final List<Cart> carts;
     private List<Cart> allCarts;
     private CartAdapter fragmentAdapter;
     private CartFragment cartFragment;
+    private String DELETE_MESSAGE;
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
@@ -44,10 +44,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @NonNull
     @Override
     public CartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //attachToRoot set to false so AdapterView is not sent to parent
         View view = LayoutInflater
                 .from(context)
                 .inflate(R.layout.item_cart, parent, false);
-        //attachToRoot set to false so AdapterView is not sent to parent
         return new ViewHolder(view);
     }
 
@@ -88,6 +88,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             tvProduct = itemView.findViewById(R.id.tvProduct);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ibRemove = itemView.findViewById(R.id.ibRemove);
+            DELETE_MESSAGE = context.getString(R.string.item_deleted);
         }
 
         public void bind(Cart cart) {
@@ -111,7 +112,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             cart.deleteInBackground();
             notifyItemRemoved(position);
             notifyDataSetChanged();
-            Snackbar snackbar = Snackbar.make(cartFragment.flCart, DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
+            Snackbar snackbar = Snackbar.make(cartFragment.getCartLayout(), DELETE_MESSAGE, Snackbar.LENGTH_SHORT);
             snackbar.show();
             cancelAlarm();
         }
@@ -131,6 +132,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         }
 
     }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
 

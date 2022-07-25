@@ -68,8 +68,8 @@ public class DetailActivity extends AppCompatActivity {
         fragmentAdapter = new ProductListingAdapter(this, allProducts);
         rvProduct.setAdapter(fragmentAdapter);
 
-        if(isNetworkConnected() == false) {
-            Toasty.warning( getApplicationContext() ,OFFLINE_MESSAGE, Toast.LENGTH_SHORT, true).show();
+        if (isNetworkConnected() == false) {
+            Toasty.warning(getApplicationContext(), OFFLINE_MESSAGE, Toast.LENGTH_SHORT, true).show();
         }
         queryProducts();
     }

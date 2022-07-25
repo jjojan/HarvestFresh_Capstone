@@ -1,6 +1,7 @@
 package com.example.harvestfresh.fragments;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.media.Image;
 import android.net.ConnectivityManager;
@@ -63,7 +64,6 @@ public class CartFragment extends Fragment {
     private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
-    private static final String DELETE_MESSAGE = "Item Deleted!";
     private static final String DATABASE_NAME = "HarvestFreshDatabase";
     private static final String OFFLINE_MESSAGE = "You are offline and cant checkout.";
 
@@ -78,8 +78,9 @@ public class CartFragment extends Fragment {
     private double totalPrice = 0;
     private List<CartRoom> savedCart;
     private CartRoomDao cartDao;
-    public FrameLayout flCart;
     private LottieAnimationView avLoading;
+    private String DELETE_MESSAGE;
+    private FrameLayout flCart;
 
     public CartFragment() {
     }
@@ -107,9 +108,9 @@ public class CartFragment extends Fragment {
         flCart = view.findViewById(R.id.flCartLayout);
         savedCart = new ArrayList<>();
         avLoading = view.findViewById(R.id.avFood);
-
+        tvCartEmpty = view.findViewById(R.id.tvEmpty);
+        DELETE_MESSAGE = getString(R.string.item_deleted);
         allCarts = new ArrayList<>();
-
         fragmentAdapter = new CartAdapter(getContext(), allCarts, this);
         rvCart.setAdapter(fragmentAdapter);
 
@@ -123,8 +124,7 @@ public class CartFragment extends Fragment {
 
         if (isNetworkConnected()) {
             queryCart();
-        }
-        else {
+        } else {
             Toasty.warning(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -145,17 +145,15 @@ public class CartFragment extends Fragment {
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
-                super.onChanged();
-                getTotal();
+                updateTotalTextView();
             }
         });
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkConnected()){
+                if (isNetworkConnected()) {
                     cartCheckout();
-                }
-                else {
+                } else {
                     Toasty.warning(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
                 }
             }
@@ -164,15 +162,18 @@ public class CartFragment extends Fragment {
 
     }
 
-    public void getTotal() {
+    public FrameLayout getCartLayout() {
+        return flCart;
+    }
+
+    public void updateTotalTextView() {
         totalPrice = 0;
         if (isNetworkConnected()) {
             for (Cart cart : allCarts) {
                 totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
             }
             tvTotal.setText(String.format("%.2f", totalPrice));
-        }
-        else {
+        } else {
             for (CartRoom cartRoom : savedCart) {
                 totalPrice += Double.parseDouble(cartRoom.productCost);
             }
@@ -191,7 +192,7 @@ public class CartFragment extends Fragment {
                 if (e != null) {
                     return;
                 }
-                for(Cart cart: carts) {
+                for (Cart cart : carts) {
                     savedCart.add(cart.toCartRoom());
                 }
                 AsyncTask.execute(new Runnable() {
@@ -242,9 +243,13 @@ public class CartFragment extends Fragment {
         popupWindow.showAsDropDown(popupView, POPUP_ZOOM, POPUP_ZOOM);
     }
 
-    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper
+            .SimpleCallback(0,
+            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -258,6 +263,7 @@ public class CartFragment extends Fragment {
             allCarts.remove(viewHolder.getAdapterPosition());
             fragmentAdapter.notifyDataSetChanged();
         }
+
     };
 
     private boolean isNetworkConnected() {

@@ -81,8 +81,9 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
                 }
             });
 
-            if (image == null) { return; }
-            else if (image != null) {
+            if (image == null) {
+                return;
+            } else if (image != null) {
                 Glide.with(context)
                         .load(image.getUrl())
                         .into(ivImage);

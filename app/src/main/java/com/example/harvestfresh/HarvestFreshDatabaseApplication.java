@@ -15,7 +15,11 @@ public class HarvestFreshDatabaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        myDatabase = Room.databaseBuilder(this, HarvestFreshDatabase.class, HarvestFreshDatabase.NAME).fallbackToDestructiveMigration().build();
+        myDatabase = Room.databaseBuilder(this,
+                        HarvestFreshDatabase.class,
+                        HarvestFreshDatabase.NAME)
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     public HarvestFreshDatabase getMyDatabase() {

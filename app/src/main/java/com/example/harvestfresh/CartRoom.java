@@ -22,19 +22,19 @@ public class CartRoom {
     @ColumnInfo
     public String productCost;
 
-    public CartRoom () {
+    public CartRoom() {
 
     }
 
-    public CartRoom (Cart cart){
+    public CartRoom(Cart cart) {
         this.CartId = cart.getObjectId();
         this.productName = cart.getProduct();
         this.productCost = cart.getPrice().getProductPrice();
     }
 
-    public static List<Cart> getCartRooms (List<CartRoom> cartsFromRooms){
+    public static List<Cart> getCartRooms(List<CartRoom> cartsFromRooms) {
         List<Cart> carts = new ArrayList<>();
-        for (CartRoom cartRoom: cartsFromRooms) {
+        for (CartRoom cartRoom : cartsFromRooms) {
             Cart cart = new Cart();
             ProductListing listing = new ProductListing();
             listing.setProductPrice(cartRoom.productCost);
@@ -43,7 +43,7 @@ public class CartRoom {
             cart.setPrice(listing);
             carts.add(cart);
         }
-    return carts;
+        return carts;
     }
 
 }

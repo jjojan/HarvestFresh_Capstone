@@ -102,8 +102,7 @@ public class SearchFragment extends Fragment {
                 suggestions.saveRecentQuery(query, null);
                 if (isNetworkConnected()) {
                     queryFullSearch(searchValue);
-                }
-                else {
+                } else {
                     roomSearch(searchValue);
                 }
                 return false;
@@ -114,8 +113,7 @@ public class SearchFragment extends Fragment {
                 CharSequence searchValue = svSearch.getQuery().toString();
                 if (isNetworkConnected()) {
                     queryPartialSearch(searchValue);
-                }
-                else {
+                } else {
                     roomSearch(searchValue);
                 }
                 return false;
@@ -131,8 +129,8 @@ public class SearchFragment extends Fragment {
                 List<StoreFrontRoom> savedStoreRooms = storeFrontDao.findStorewithName(searchValue.toString());
                 List<StoreFront> stores;
                 stores = new ArrayList<>();
-                for(StoreFrontRoom storeFrontRoom: savedStoreRooms ) {
-                   stores.add(storeFrontRoom.toStoreFront());
+                for (StoreFrontRoom storeFrontRoom : savedStoreRooms) {
+                    stores.add(storeFrontRoom.toStoreFront());
                 }
                 allStores.clear();
                 allStores.addAll(stores);

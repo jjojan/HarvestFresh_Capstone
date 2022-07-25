@@ -29,7 +29,9 @@ public class StoreFront extends ParseObject {
         setName(storeFrontRoom.name);
     }
 
-    public String getName() { return getString(KEY_NAME);}
+    public String getName() {
+        return getString(KEY_NAME);
+    }
 
     public void setName(String name) {
         put(KEY_NAME, name);
@@ -59,5 +61,7 @@ public class StoreFront extends ParseObject {
         put(KEY_LOCATION, location);
     }
 
-    public StoreFrontRoom toStoreFrontRoom() { return new StoreFrontRoom(this); }
+    public StoreFrontRoom toStoreFrontRoom() {
+        return new StoreFrontRoom(this);
+    }
 }

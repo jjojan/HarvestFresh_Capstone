@@ -153,11 +153,10 @@ public class ProductListingAdapter extends RecyclerView.Adapter<ProductListingAd
             ParseCloud.callFunctionInBackground(PUSH_ID, params, new FunctionCallback<Object>() {
                 @Override
                 public void done(Object response, ParseException exc) {
-                    if(exc == null) {
+                    if (exc == null) {
                         // The function executed, but still has to check the response
-                        alertDisplayer(PUSH_ID,PUSH_MESSAGE);
-                    }
-                    else {
+                        alertDisplayer(PUSH_ID, PUSH_MESSAGE);
+                    } else {
                         // Something went wrong
                     }
                 }

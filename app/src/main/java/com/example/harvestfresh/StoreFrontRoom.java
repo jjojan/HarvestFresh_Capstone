@@ -36,25 +36,27 @@ public class StoreFrontRoom {
     @ColumnInfo
     public String location;
 
-    public StoreFrontRoom () {
+    public StoreFrontRoom() {
 
     }
 
-    public StoreFrontRoom (StoreFront storeFront){
+    public StoreFrontRoom(StoreFront storeFront) {
         this.name = storeFront.getName();
         this.image = storeFront.getImage().getUrl();
         this.id = storeFront.getObjectId();
     }
 
-    public static List<StoreFront> getStoreFrontRooms (List<StoreFrontRoom> storesFromRooms){
-      List<StoreFront> storeFronts = new ArrayList<>();
-      for (StoreFrontRoom storeFront: storesFromRooms) {
-          StoreFront storeFrontRoom = new StoreFront(storeFront);
-          storeFronts.add(storeFrontRoom);
-          }
-      return storeFronts;
+    public static List<StoreFront> getStoreFrontRooms(List<StoreFrontRoom> storesFromRooms) {
+        List<StoreFront> storeFronts = new ArrayList<>();
+        for (StoreFrontRoom storeFront : storesFromRooms) {
+            StoreFront storeFrontRoom = new StoreFront(storeFront);
+            storeFronts.add(storeFrontRoom);
+        }
+        return storeFronts;
     }
 
-    public StoreFront toStoreFront() { return new StoreFront(this); }
+    public StoreFront toStoreFront() {
+        return new StoreFront(this);
+    }
 
 }

@@ -26,13 +26,10 @@ import com.example.harvestfresh.StoreFrontAdapter;
 import com.example.harvestfresh.StoreFrontDao;
 import com.example.harvestfresh.StoreFrontRoom;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -51,7 +48,7 @@ public class HomeFragment extends Fragment {
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
     private List<StoreFrontRoom> savedStores;
-    public  StoreFrontDao storeFrontDao;
+    public StoreFrontDao storeFrontDao;
     public HarvestFreshDatabase harvestFreshDatabase;
 
     public HomeFragment() {
@@ -93,10 +90,9 @@ public class HomeFragment extends Fragment {
                 HarvestFreshDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
         storeFrontDao = harvestFreshDatabase.storeFrontDao();
 
-        if(isNetworkConnected()) {
+        if (isNetworkConnected()) {
             queryStores();
-        }
-        else {
+        } else {
             Toasty.info(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -126,7 +122,7 @@ public class HomeFragment extends Fragment {
                     Log.e(TAG, STORE_ERROR, e);
                     return;
                 }
-                for(StoreFront store: stores) {
+                for (StoreFront store : stores) {
                     savedStores.add(store.toStoreFrontRoom());
                 }
                 AsyncTask.execute(new Runnable() {
@@ -143,7 +139,8 @@ public class HomeFragment extends Fragment {
 
         });
 
-        }
+    }
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE);
 
