@@ -1,8 +1,11 @@
 package com.example.harvestfresh.fragments;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.media.Image;
+import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,12 +27,19 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.harvestfresh.Cart;
 import com.example.harvestfresh.CartAdapter;
+import com.example.harvestfresh.CartRoom;
+import com.example.harvestfresh.CartRoomDao;
+import com.example.harvestfresh.HarvestFreshDatabase;
 import com.example.harvestfresh.ProductListingAdapter;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
+import com.example.harvestfresh.StoreFrontDao;
+import com.example.harvestfresh.StoreFrontRoom;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -43,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 
+import es.dmoral.toasty.Toasty;
+
 public class CartFragment extends Fragment {
 
     private static final String TAG = "CartFragment";
@@ -51,6 +64,8 @@ public class CartFragment extends Fragment {
     private static final int REMOVE_INDEX = 0;
     private static final int POPUP_ZOOM = 0;
     private static final int CART_LIMIT = 20;
+    private static final String DATABASE_NAME = "HarvestFreshDatabase";
+    private static final String OFFLINE_MESSAGE = "You are offline and cant checkout.";
 
     private Button btnCheckout;
     private Button btnConfirm;
@@ -61,6 +76,9 @@ public class CartFragment extends Fragment {
     private CartAdapter fragmentAdapter;
     private List<Cart> allCarts;
     private double totalPrice = 0;
+    private List<CartRoom> savedCart;
+    private CartRoomDao cartDao;
+    private LottieAnimationView avLoading;
     private String DELETE_MESSAGE;
     private FrameLayout flCart;
 
@@ -88,16 +106,41 @@ public class CartFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tvTotal);
         rvCart.setLayoutManager(new LinearLayoutManager(getContext()));
         flCart = view.findViewById(R.id.flCartLayout);
+        savedCart = new ArrayList<>();
+        avLoading = view.findViewById(R.id.avFood);
         tvCartEmpty = view.findViewById(R.id.tvEmpty);
         DELETE_MESSAGE = getString(R.string.item_deleted);
         allCarts = new ArrayList<>();
         fragmentAdapter = new CartAdapter(getContext(), allCarts, this);
         rvCart.setAdapter(fragmentAdapter);
 
+        HarvestFreshDatabase harvestFreshDatabase = Room.databaseBuilder(getContext().getApplicationContext(),
+                HarvestFreshDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        cartDao = harvestFreshDatabase.cartRoomDao();
+
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(rvCart);
 
-        queryCart();
+
+        if (isNetworkConnected()) {
+            queryCart();
+        } else {
+            Toasty.warning(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    List<CartRoom> savedCarts = cartDao.recentCart();
+                    List<Cart> cartsFromRoom = CartRoom.getCartRooms(savedCarts);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragmentAdapter.addAll(cartsFromRoom);
+                        }
+                    });
+                }
+            });
+
+        }
 
         rvCart.getAdapter().registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -108,9 +151,15 @@ public class CartFragment extends Fragment {
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cartCheckout();
+                if (isNetworkConnected()) {
+                    cartCheckout();
+                } else {
+                    Toasty.warning(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
+                }
             }
         });
+
+
     }
 
     public FrameLayout getCartLayout() {
@@ -119,10 +168,17 @@ public class CartFragment extends Fragment {
 
     public void updateTotalTextView() {
         totalPrice = 0;
-        for (Cart cart : allCarts) {
-            totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
+        if (isNetworkConnected()) {
+            for (Cart cart : allCarts) {
+                totalPrice += Double.parseDouble(cart.getPrice().getProductPrice());
+            }
+            tvTotal.setText(String.format("%.2f", totalPrice));
+        } else {
+            for (CartRoom cartRoom : savedCart) {
+                totalPrice += Double.parseDouble(cartRoom.productCost);
+            }
+            tvTotal.setText(String.format("%.2f", totalPrice));
         }
-        tvTotal.setText(String.format("%.2f", totalPrice));
     }
 
     private void queryCart() {
@@ -136,6 +192,16 @@ public class CartFragment extends Fragment {
                 if (e != null) {
                     return;
                 }
+                for (Cart cart : carts) {
+                    savedCart.add(cart.toCartRoom());
+                }
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        cartDao.insertCartRoom(savedCart.toArray(new CartRoom[0]));
+                        List<CartRoom> savedStores = cartDao.recentCart();
+                    }
+                });
                 allCarts.addAll(carts);
                 fragmentAdapter.notifyDataSetChanged();
             }
@@ -162,6 +228,8 @@ public class CartFragment extends Fragment {
                 }
                 fragmentAdapter.clear();
                 popupWindow.dismiss();
+                avLoading.setVisibility(View.VISIBLE);
+                avLoading.playAnimation();
             }
         });
 
@@ -197,4 +265,35 @@ public class CartFragment extends Fragment {
         }
 
     };
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private void animationControl(LottieAnimationView rvLoading) {
+        rvLoading.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                avLoading.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+    }
+
 }

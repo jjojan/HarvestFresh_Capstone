@@ -1,5 +1,7 @@
 package com.example.harvestfresh.fragments;
 
+import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,15 +9,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.harvestfresh.HarvestFreshDatabase;
+import com.example.harvestfresh.ParseApplication;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
 import com.example.harvestfresh.StoreFrontAdapter;
+import com.example.harvestfresh.StoreFrontDao;
+import com.example.harvestfresh.StoreFrontRoom;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -23,9 +32,13 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
+    private static final String DATABASE_NAME = "HarvestFreshDatabase";
+    private static final String OFFLINE_MESSAGE = "You are offline, and are viewing a stale page.";
     private static final String STORE_ERROR = String.valueOf(R.string.store_error);
     private static final int SPAN_COUNT = 2;
     private static final int STORE_LIMIT = 20;
@@ -34,6 +47,9 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvStores;
     private StoreFrontAdapter fragmentAdapter;
     private List<StoreFront> allStores;
+    private List<StoreFrontRoom> savedStores;
+    public StoreFrontDao storeFrontDao;
+    public HarvestFreshDatabase harvestFreshDatabase;
 
     public HomeFragment() {
     }
@@ -66,10 +82,32 @@ public class HomeFragment extends Fragment {
         rvStores.setLayoutManager(layout);
 
         allStores = new ArrayList<>();
+        savedStores = new ArrayList<>();
         fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
         rvStores.setAdapter(fragmentAdapter);
 
-        queryStores();
+        harvestFreshDatabase = Room.databaseBuilder(getContext().getApplicationContext(),
+                HarvestFreshDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        storeFrontDao = harvestFreshDatabase.storeFrontDao();
+
+        if (isNetworkConnected()) {
+            queryStores();
+        } else {
+            Toasty.info(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    List<StoreFrontRoom> savedStoreFronts = storeFrontDao.recentStores();
+                    List<StoreFront> storesFromRooms = StoreFrontRoom.getStoreFrontRooms(savedStoreFronts);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragmentAdapter.addAll(storesFromRooms);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private void queryStores() {
@@ -84,11 +122,29 @@ public class HomeFragment extends Fragment {
                     Log.e(TAG, STORE_ERROR, e);
                     return;
                 }
+                for (StoreFront store : stores) {
+                    savedStores.add(store.toStoreFrontRoom());
+                }
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        storeFrontDao.insertStoreFront(savedStores.toArray(new StoreFrontRoom[0]));
+                        List<StoreFrontRoom> savedStores = storeFrontDao.recentStores();
+                    }
+                });
                 allStores.addAll(stores);
                 fragmentAdapter.notifyDataSetChanged();
             }
+
+
         });
 
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 }

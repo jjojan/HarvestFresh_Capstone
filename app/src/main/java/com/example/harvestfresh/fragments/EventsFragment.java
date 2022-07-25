@@ -1,16 +1,18 @@
 package com.example.harvestfresh.fragments;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Handler;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.harvestfresh.DetailActivity;
 import com.example.harvestfresh.R;
 import com.example.harvestfresh.StoreFront;
@@ -52,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 
 public class EventsFragment extends Fragment {
 
@@ -60,6 +65,7 @@ public class EventsFragment extends Fragment {
     private static final String CURRENT_LOCATION = "Current Location";
     private static final String ERROR_MESSAGE = "An error occured";
     private static final String MILES_AWAY = " Miles Away";
+    private static final String OFFLINE_MESSAGE = "You are offline and cannot view maps.";
     private static final int ZOOM_SIZE = 12;
     private static final int QUERY_SIZE = 20;
     private static final int DELAY_TIME_MS = 500;
@@ -67,6 +73,7 @@ public class EventsFragment extends Fragment {
     private GoogleMap mMap;
     private GoogleMap markerMap;
     private StoreFrontAdapter fragmentAdapter;
+    private LottieAnimationView rvLoading;
     private List<StoreFront> allStores;
     private final Map<Marker, StoreFront> mMarkertoStore = new HashMap<>();
     private boolean doubleClickPress = false;
@@ -98,7 +105,6 @@ public class EventsFragment extends Fragment {
                             }
                         }, DELAY_TIME_MS);
                     }
-
                     return false;
                 }
             });
@@ -122,8 +128,13 @@ public class EventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (isNetworkConnected() == false) {
+            goHomeView();
+        }
+
         allStores = new ArrayList<>();
         fragmentAdapter = new StoreFrontAdapter(getContext(), allStores);
+        rvLoading = view.findViewById(R.id.avFood);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         fetchLastLocation();
@@ -147,6 +158,38 @@ public class EventsFragment extends Fragment {
             @Override
             public void onError(@NonNull Status status) {
                 Log.e(TAG, ERROR_MESSAGE + status);
+            }
+        });
+
+        animationControl(rvLoading);
+    }
+
+    private void goHomeView() {
+        Toasty.warning(getContext(), OFFLINE_MESSAGE, Toast.LENGTH_LONG, true).show();
+        final FragmentManager fragmentManager = getFragmentManager();
+        Fragment fragment = new HomeFragment();
+        fragmentManager.beginTransaction().replace(R.id.fLayoutContainer, fragment).commit();
+
+    }
+
+    private void animationControl(LottieAnimationView rvLoading) {
+        rvLoading.playAnimation();
+        rvLoading.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                rvLoading.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
             }
         });
     }
@@ -243,6 +286,12 @@ public class EventsFragment extends Fragment {
         ParseGeoPoint userLocation = new ParseGeoPoint(latLng.latitude, latLng.longitude);
 
         placeMarkers(userLocation);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(getContext().CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 }

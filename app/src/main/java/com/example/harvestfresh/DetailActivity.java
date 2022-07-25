@@ -1,11 +1,13 @@
 package com.example.harvestfresh;
 
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,9 +27,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class DetailActivity extends AppCompatActivity {
 
     private static int PRODUCT_LIMIT = 20;
+    private static String OFFLINE_MESSAGE = "You are offline and cannot buy any products.";
 
     private RecyclerView rvProduct;
     private ProductListingAdapter fragmentAdapter;
@@ -63,6 +68,9 @@ public class DetailActivity extends AppCompatActivity {
         fragmentAdapter = new ProductListingAdapter(this, allProducts);
         rvProduct.setAdapter(fragmentAdapter);
 
+        if (isNetworkConnected() == false) {
+            Toasty.warning(getApplicationContext(), OFFLINE_MESSAGE, Toast.LENGTH_SHORT, true).show();
+        }
         queryProducts();
     }
 
@@ -85,4 +93,11 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
 }

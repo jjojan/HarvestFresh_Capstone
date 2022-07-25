@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/flCartLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,5 +49,16 @@
         android:layout_marginTop="550dp"
         android:text="0.00"
         android:textSize="24sp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/avFood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:visibility="invisible"
+        app:lottie_autoPlay="true"
+        app:lottie_imageAssetsFolder="raw"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/foodanimation" />
 
 </FrameLayout>

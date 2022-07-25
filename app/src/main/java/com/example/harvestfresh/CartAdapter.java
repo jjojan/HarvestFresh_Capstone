@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +92,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         }
 
         public void bind(Cart cart) {
-            tvPrice.setText(cart.getPrice().getProductPrice());
+            if (isNetworkConnected()) {
+                tvPrice.setText(cart.getPrice().getProductPrice());
+            }
             tvProduct.setText(cart.getProduct());
 
             ibRemove.setOnClickListener(new View.OnClickListener() {
@@ -128,5 +131,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             alarmManager.cancel(pendingIntent);
         }
 
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }

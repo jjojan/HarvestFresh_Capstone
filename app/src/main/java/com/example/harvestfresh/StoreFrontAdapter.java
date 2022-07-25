@@ -2,6 +2,7 @@ package com.example.harvestfresh;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.parse.ParseFile;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.ViewHolder> {
 
@@ -71,8 +74,16 @@ public class StoreFrontAdapter extends RecyclerView.Adapter<StoreFrontAdapter.Vi
             tvStoreName.setText(store.getName());
             ParseFile image = store.getImage();
 
-            if (image == null) { return; }
-            else if (image != null) {
+            tvStoreName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goDetailActivity();
+                }
+            });
+
+            if (image == null) {
+                return;
+            } else if (image != null) {
                 Glide.with(context)
                         .load(image.getUrl())
                         .into(ivImage);

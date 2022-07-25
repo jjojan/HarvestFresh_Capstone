@@ -40,4 +40,8 @@ public class Cart extends ParseObject {
         put(KEY_USER, user);
     }
 
+    public CartRoom toCartRoom() {
+        return new CartRoom(this);
+    }
+
 }

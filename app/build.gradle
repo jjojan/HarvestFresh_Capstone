@@ -51,4 +51,9 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation "com.github.parse-community.Parse-SDK-Android:fcm:1.25.0"
+    implementation "com.airbnb.android:lottie:5.2.0"
+    def roomVersion = "2.1.0"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    implementation 'com.github.GrenderG:Toasty:1.5.2'
 }

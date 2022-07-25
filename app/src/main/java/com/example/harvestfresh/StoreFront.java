@@ -1,5 +1,11 @@
 package com.example.harvestfresh;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -14,6 +20,14 @@ public class StoreFront extends ParseObject {
     public static final String KEY_IMAGE = "StoreImage";
     public static final String KEY_USER = "User";
     public static final String KEY_LOCATION = "StoreLocation";
+
+    public StoreFront() {
+
+    }
+
+    public StoreFront(StoreFrontRoom storeFrontRoom) {
+        setName(storeFrontRoom.name);
+    }
 
     public String getName() {
         return getString(KEY_NAME);
@@ -45,5 +59,9 @@ public class StoreFront extends ParseObject {
 
     public void setLocation(ParseGeoPoint location) {
         put(KEY_LOCATION, location);
+    }
+
+    public StoreFrontRoom toStoreFrontRoom() {
+        return new StoreFrontRoom(this);
     }
 }
