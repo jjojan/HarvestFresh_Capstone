@@ -1,4 +1,4 @@
-Capstone Project- README Template
+
 ===
 
 # HarvestFresh
@@ -24,9 +24,7 @@ HarvestFresh allows people to connect with local farmers and farmer's markets in
 
 ## Product Spec
 
-### 1. User Stories (Required and Optional)
-
-**Required Must-have Stories**
+### 1. User Stories 
 
 * User can view selection of farmer shopfronts
 * User can add items to cart to buy
@@ -34,7 +32,7 @@ HarvestFresh allows people to connect with local farmers and farmer's markets in
 * User can view cart
 
 
-**Optional Nice-to-have Stories**
+**Stories**
 
 * Inventory mangement base
 * Database storing
@@ -80,12 +78,12 @@ HarvestFresh allows people to connect with local farmers and farmer's markets in
 
 
 
-### [BONUS] Digital Wireframes & Mockups
+### Digital Wireframes & Mockups
 
 <img width="1375" alt="Screen Shot 2022-06-20 at 2 29 27 PM" src="https://user-images.githubusercontent.com/68476473/174680099-06e39e0e-9bbc-4d32-a46c-38ea0b8e8f8c.png">
 
 
-### [BONUS] Interactive Prototype
+### Interactive Prototype
 
 https://previewer.adalo.com/b44d0d5a-8128-47bc-8a2e-08f118492007
 
